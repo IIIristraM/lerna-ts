@@ -3,11 +3,14 @@ import path from 'path';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
 import webpack from 'webpack';
+import open from 'open';
 
 import clientConfig from '../../client/webpack.config';
 import commonConfig from '../../common/webpack.config';
 import vendorsConfig from '../../vendors/webpack.config';
 import { createWatchIgnore } from '../../webpack/src';
+
+const PORT = 3000;
 
 const configs = [
     vendorsConfig,
@@ -55,6 +58,16 @@ app.use((function () {
         return Promise.resolve();
     })
 
+    webpackDevMiddlewareInstance.waitUntilValid(async () => {
+      const url = `http://localhost:${PORT}/`;
+
+      try {
+        await open(url, {url: true, wait: true});
+      } catch {
+        console.log(`Site is available at ${url}`)
+      }
+    })
+
     return webpackDevMiddlewareInstance;
 })());
 
@@ -64,6 +77,6 @@ app.get('/', function (req, res) {
     res.sendFile(path.join(__dirname + '/index.html'));
 });
 
-app.listen(3000, function () {
+app.listen(PORT, function () {
     console.log('LISTENING');
 });

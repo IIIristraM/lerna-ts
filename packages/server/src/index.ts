@@ -1,0 +1,69 @@
+import express from 'express';
+import path from 'path';
+import WebpackDevMiddleware from 'webpack-dev-middleware';
+import WebpackHotMiddleware from 'webpack-hot-middleware';
+import webpack from 'webpack';
+
+import clientConfig from '../../client/webpack.config';
+import commonConfig from '../../common/webpack.config';
+import vendorsConfig from '../../vendors/webpack.config';
+import { createWatchIgnore } from '../../webpack/src';
+
+const configs = [
+    vendorsConfig,
+    commonConfig,
+    clientConfig,
+];
+
+const compiler = webpack(configs);
+
+const app = express();
+
+app.use((function () {
+    const webpackDevMiddlewareInstance = WebpackDevMiddleware(compiler, {
+        publicPath: '/static/',
+        lazy: false,
+        stats: {
+            warnings: true,
+            errors: true,
+            assets: false,
+            cachedAssets: false,
+            children: false,
+            chunks: false,
+            publicPath: true
+        },
+        watchOptions: {
+            aggregateTimeout: 500,
+            ignored: createWatchIgnore()
+        }
+    });
+
+    compiler.hooks.watchRun.tapPromise('ChangesWatcher', async () => {
+        for (let i = 0; i < compiler.compilers.length; i++) {
+            const { watchFileSystem } = compiler.compilers[i];
+            const { name } = configs[i];
+
+            const watcher = watchFileSystem?.watcher || watchFileSystem?.wfs?.watcher
+            if (!watcher) {
+                return;
+            }
+
+            const changedFile = Object.keys(watcher.mtimes)
+            console.log(name, changedFile);
+        }
+
+        return Promise.resolve();
+    })
+
+    return webpackDevMiddlewareInstance;
+})());
+
+app.use(WebpackHotMiddleware(compiler));
+
+app.get('/', function (req, res) {
+    res.sendFile(path.join(__dirname + '/index.html'));
+});
+
+app.listen(3000, function () {
+    console.log('LISTENING');
+});

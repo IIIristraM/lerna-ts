@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "es6",
+        "moduleResolution": "node",
+        "allowJs": false,
+        "declaration": true,
+        "checkJs": false,
+        "allowSyntheticDefaultImports": true,
+        "strictBindCallApply": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "noEmitHelpers": true,
+        "strictNullChecks": true,
+        "noImplicitAny": true,
+        "noUnusedLocals": true,
+        "pretty": true,
+        "skipDefaultLibCheck": true,
+        "declarationMap": true,
+        "disableSourceOfProjectReferenceRedirect": true,
+        "jsx": "react",
+        "esModuleInterop": true,
+        "lib": [
+            "ES2015"
+        ],
+        "types": [
+            "utils"
+        ],
+        "typeRoots": [
+            "../typings/src",
+            "../../node_modules/@types"
+        ]
+    }
+}

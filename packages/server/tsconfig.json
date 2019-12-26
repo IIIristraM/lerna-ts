@@ -1,0 +1,14 @@
+{
+    "extends": "../tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "allowJs": true,
+        "outDir": "dist",
+        "types": [
+            "node",
+            "webpack"
+        ]
+    },
+    "include": [
+        "src/**/*"
+    ]
+}

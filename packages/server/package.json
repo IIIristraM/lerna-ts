@@ -1,0 +1,12 @@
+{
+    "name": "@project/server",
+    "version": "0.0.0",
+    "description": "",
+    "main": "",
+    "author": "iiiristram",
+    "license": "ISC",
+    "private": true,
+    "scripts": {
+        "run:server": "node -r ts-node/register ./src/index.ts"
+    }
+}

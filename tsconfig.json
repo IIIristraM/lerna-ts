@@ -1,0 +1,17 @@
+{
+    "extends": "./packages/tsconfig/tsconfig.json",
+    "compileOnSave": true,
+    "references": [
+        {
+            "path": "./packages/client"
+        }
+    ],
+    "compilerOptions": {
+        "noEmit": true,
+        "types": [],
+        "lib": [
+            "DOM"
+        ]
+    },
+    "files": []
+}

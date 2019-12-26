@@ -1,0 +1,12 @@
+{
+    "name": "@project/vendors",
+    "version": "0.0.0",
+    "description": "",
+    "author": "iiiristram",
+    "license": "ISC",
+    "private": true,
+    "scripts": {
+        "build": "npm run build:dll",
+        "build:dll": "rm -rf dist && TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack"
+    }
+}

@@ -1,0 +1,9 @@
+{
+    "name": "@project/webpack",
+    "version": "0.0.0",
+    "description": "",
+    "main": "",
+    "author": "iiiristram",
+    "license": "ISC",
+    "private": true
+}

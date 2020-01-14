@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { init } from '../webpack/src';
 
 const NAME = 'vendors';
@@ -5,9 +7,11 @@ const NAME = 'vendors';
 export default init({
     name: NAME,
     dll: true,
-    context: __dirname,
+    context: path.resolve(__dirname),
     entry: [
         'react',
-        'react-dom'
+        'react-dom',
+        'react-router',
+        'react-router-dom'
     ]
 });

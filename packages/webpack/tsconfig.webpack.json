@@ -1,10 +1,10 @@
 {
     "extends": "../tsconfig/tsconfig.json",
     "compilerOptions": {
-        "module": "commonjs",
-        "target": "es5",
         "types": [
-            "node"
+            "node",
+            "webpack"
         ]
-    }
+    },
+    "files": []
 }

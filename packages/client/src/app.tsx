@@ -1,21 +1,40 @@
 import React from 'react';
-import ReactDOM from "react-dom";
-import { Hello } from "@project/common/components";
-import { square } from "@project/common/utils";
+import { Switch, Route } from 'react-router';
 
-const ROOT_ID = "app" as const;
+import { Header, Content, Body } from '@project/common/components/layout';
 
-export function start() {
-    const appEl = document.getElementById(ROOT_ID);
+import HomePage from './pages/HomePage';
+import AboutPage from './pages/AboutPage';
+import ContactsPage from './pages/ContactsPage';
+import { Link } from 'react-router-dom';
 
-    if (appEl === null) {
-        console.error(
-            "React application failed to mount, no such element with id:",
-            ROOT_ID
-        );
+const ROUTES = [
+    { url: '/', page: HomePage, text: 'Home' },
+    { url: '/contacts', page: ContactsPage, text: 'Contacts' },
+    { url: '/about', page: AboutPage, text: 'About' },
+]
 
-        return;
-    }
-
-    ReactDOM.render(<Hello>{square(8 as Double)}</Hello>, appEl);
+const LINK_STYLE: React.CSSProperties = {
+    marginRight: 15,
+    color: 'black',
+    textTransform: 'uppercase'
 }
+
+const App: React.FC<{}> = () => (
+    <Body>
+        <Header>
+            {ROUTES.map(({ url, text }) => (
+                <Link key={url} to={url} style={LINK_STYLE}>{text}</Link>
+            ))}
+        </Header>
+        <Content>
+            <Switch>
+                {ROUTES.map(({ url, page }) => (
+                    <Route key={url} path={url} component={page} exact />
+                ))}
+            </Switch>
+        </Content>
+    </Body>
+)
+
+export default App;

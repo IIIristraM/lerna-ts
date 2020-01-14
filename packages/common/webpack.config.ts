@@ -1,3 +1,5 @@
+import path from 'path';
+
 import { init, addDll, processTypescript } from '../webpack/src';
 import vendorsConfig from '../vendors/webpack.config';
 
@@ -6,7 +8,7 @@ const NAME = 'common';
 const config = init({
     name: NAME,
     dll: true,
-    context: __dirname
+    context: path.resolve(__dirname)
 });
 
 processTypescript(config)

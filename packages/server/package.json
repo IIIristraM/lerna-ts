@@ -7,6 +7,14 @@
     "license": "ISC",
     "private": true,
     "scripts": {
-        "run:server": "node -r ts-node/register ./src/index.ts"
+        "build": "npm run build:render",
+        "build:render": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack --config webpack.render.config.ts",
+        "run:server": "tsnd --respawn -r tsconfig-paths/register ./src/index.tsx",
+        "clean": "rm -rf dist"
+    },
+    "dependencies": {
+        "@project/vendors": "file:../vendors",
+        "@project/common": "file:../common",
+        "@project/client": "file:../client"
     }
 }

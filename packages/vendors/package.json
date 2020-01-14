@@ -7,6 +7,7 @@
     "private": true,
     "scripts": {
         "build": "npm run build:dll",
-        "build:dll": "rm -rf dist && TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack"
+        "build:dll": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
+        "clean": "rm -rf dist"
     }
 }

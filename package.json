@@ -6,7 +6,7 @@
     "scripts": {
         "init": "npm i && npm run clean:deps && npx lerna bootstrap",
         "tsc:watch": "npx lerna run tsc:clean && npx lerna run --stream tsc:watch",
-        "start": "npx lerna run --stream build:dll && npx lerna run --stream run:server",
+        "start": "npx lerna run --stream clean && npx lerna run --stream build:dll && npx lerna run --stream run:server",
         "clean:deps": "npx lerna exec 'rm -rf node_modules && rm -rf package-lock.json'",
         "tsc:clean": "npx lerna run tsc:clean"
     },

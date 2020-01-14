@@ -17,11 +17,8 @@ const SOURCE_FOLDER = 'src';
 const MODE = 'development';
 
 export const createWatchIgnore = () => [
-    /dist/,
-    /build/,
     /node_modules/,
     /\.js/,
-    /\.d\.ts/,
     /\.json/
 ]
 
@@ -50,7 +47,7 @@ export const init = ({
             )
         },
         output: {
-            filename: '[name].js',
+            filename: dll ? '[name].bundle.dll.js' : '[name].bundle.js',
             path: path.join(context, DIST_FOLDER),
             publicPath: `/static/${name}/`
         },

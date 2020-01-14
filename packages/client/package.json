@@ -9,10 +9,12 @@
     "scripts": {
         "tsc": "tsc -b",
         "tsc:watch": "tsc -b --watch --verbose",
-        "build": "npm run tsc:clean && webpack",
+        "build": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
+        "clean": "npm run tsc:clean",
         "tsc:clean": "tsc -b --clean && rm -rf dist"
     },
     "dependencies": {
+        "@project/vendors": "file:../vendors",
         "@project/common": "file:../common"
     }
 }

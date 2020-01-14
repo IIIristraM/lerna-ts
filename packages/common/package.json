@@ -9,7 +9,8 @@
     "private": true,
     "scripts": {
         "build": "npm run build:dll",
-        "build:dll": "npm run tsc:clean && TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
+        "build:dll": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
+        "clean": "npm run tsc:clean",
         "tsc:clean": "tsc -b --clean && rm -rf dist"
     },
     "dependencies": {

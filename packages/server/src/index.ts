@@ -26,19 +26,12 @@ app.use((function () {
     const webpackDevMiddlewareInstance = WebpackDevMiddleware(compiler, {
         publicPath: '/static/',
         lazy: false,
-        stats: {
-            warnings: true,
-            errors: true,
-            assets: false,
-            cachedAssets: false,
-            children: false,
-            chunks: false,
-            publicPath: true
-        },
+        stats: 'errors-warnings',
         watchOptions: {
             aggregateTimeout: 500,
             ignored: createWatchIgnore()
-        }
+        },
+        writeToDisk: true
     });
 
     compiler.hooks.watchRun.tapPromise('ChangesWatcher', async () => {
@@ -59,13 +52,13 @@ app.use((function () {
     })
 
     webpackDevMiddlewareInstance.waitUntilValid(async () => {
-      const url = `http://localhost:${PORT}/`;
+        const url = `http://localhost:${PORT}/`;
 
-      try {
-        await open(url, {url: true, wait: true});
-      } catch {
-        console.log(`Site is available at ${url}`)
-      }
+        try {
+            await open(url, { url: true, wait: true });
+        } catch {
+            console.log(`Site is available at ${url}`)
+        }
     })
 
     return webpackDevMiddlewareInstance;

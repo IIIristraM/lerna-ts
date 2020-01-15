@@ -1,40 +1,34 @@
 import express from 'express';
-import path from 'path';
 import WebpackDevMiddleware from 'webpack-dev-middleware';
 import WebpackHotMiddleware from 'webpack-hot-middleware';
+import WebpackHotServerMiddleware from 'webpack-hot-server-middleware';
 import webpack from 'webpack';
 import open from 'open';
 
-import clientConfig from '../../client/webpack.config';
-import commonConfig from '../../common/webpack.config';
-import vendorsConfig from '../../vendors/webpack.config';
 import { createWatchIgnore } from '../../webpack/src';
+import clientConfig from '../../client/webpack.config';
 
-const PORT = 3000;
-
-const configs = [
-    vendorsConfig,
-    commonConfig,
-    clientConfig,
-];
+import { PUBLIC_PATH, PORT, configs } from './consts';
 
 const compiler = webpack(configs);
-
 const app = express();
 
 app.use((function () {
     const webpackDevMiddlewareInstance = WebpackDevMiddleware(compiler, {
-        publicPath: '/static/',
+        publicPath: PUBLIC_PATH,
         lazy: false,
         stats: 'errors-warnings',
         watchOptions: {
             aggregateTimeout: 500,
             ignored: createWatchIgnore()
         },
-        writeToDisk: true
+        logLevel: 'warn',
+        writeToDisk: true // required for IDE handle TS errors
     });
 
     compiler.hooks.watchRun.tapPromise('ChangesWatcher', async () => {
+        console.log('------------- REBUILD TRIGGERED BY -------------');
+
         for (let i = 0; i < compiler.compilers.length; i++) {
             const { watchFileSystem } = compiler.compilers[i];
             const { name } = configs[i];
@@ -64,12 +58,18 @@ app.use((function () {
     return webpackDevMiddlewareInstance;
 })());
 
-app.use(WebpackHotMiddleware(compiler));
+const clienCompiler = compiler.compilers.find(c => c.name === clientConfig.name);
+if (clienCompiler) {
+    app.use(WebpackHotMiddleware(clienCompiler, {
+        log: console.log,
+        noInfo: true
+    }));
+}
 
-app.get('/', function (req, res) {
-    res.sendFile(path.join(__dirname + '/index.html'));
-});
+app.use(WebpackHotServerMiddleware(compiler, {
+    chunkName: 'index'
+}));
 
 app.listen(PORT, function () {
-    console.log('LISTENING');
+    console.log('---------------- LISTENING ----------------');
 });

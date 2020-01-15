@@ -1,12 +1,24 @@
 {
     "extends": "../tsconfig/tsconfig.json",
     "compilerOptions": {
-        "allowJs": true,
         "outDir": "dist",
+        "baseUrl": ".",
         "types": [
             "node",
-            "webpack"
-        ]
+            "webpack",
+            "react",
+            "react-router",
+            "react-router-dom",
+            "utils"
+        ],
+        "paths": {
+            "@project/common/*": [
+                "../common/src/*"
+            ],
+            "@project/client/*": [
+                "../client/src/*"
+            ]
+        }
     },
     "include": [
         "src/**/*"

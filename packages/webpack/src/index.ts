@@ -1,16 +1,6 @@
 import path from 'path';
-import webpack, { Configuration } from 'webpack';
+import webpack, { ProjectConfiguration } from 'webpack';
 import glob from 'glob';
-
-type ProjectConfiguration = Configuration & {
-    context: string
-    entry: {
-        index: string[];
-        [x: string]: string[];
-    }
-    output: webpack.Output;
-    plugins: webpack.Plugin[]
-}
 
 const DIST_FOLDER = 'dist';
 const SOURCE_FOLDER = 'src';
@@ -26,14 +16,16 @@ type InitOptions = {
     name: string,
     dll?: boolean,
     context: string,
-    entry?: string[]
+    entry?: string[],
+    hot?: boolean
 }
 
 export const init = ({
     name = '',
     dll = false,
     context = '',
-    entry
+    entry,
+    hot
 }: InitOptions) => {
     const config: ProjectConfiguration = {
         name,
@@ -63,6 +55,8 @@ export const init = ({
     if (dll) {
         const libName = `${name}_lib`;
         config.output.library = libName;
+        config.output.libraryTarget = 'umd';
+        config.output.globalObject = 'this';
 
         config.plugins.push(...[
             new webpack.DllPlugin({
@@ -73,7 +67,7 @@ export const init = ({
         ])
     }
 
-    if (MODE === 'development') {
+    if (hot !== false && MODE === 'development') {
         const hmrPath = `webpack-hot-middleware/client?name=${name}`;
 
         if (!dll) {
@@ -98,6 +92,7 @@ export const processTypescript = (config: ProjectConfiguration) => {
     config.module.rules.push({
         test: /[.]tsx?/,
         loader: 'ts-loader',
+        exclude: '/node_modules/',
         options: {
             projectReferences: true
         }
@@ -106,20 +101,29 @@ export const processTypescript = (config: ProjectConfiguration) => {
     return config;
 }
 
-export const addDll = (config: ProjectConfiguration, dllName = '') => {
+export const addAliases = (config: ProjectConfiguration, dllName: string) => {
     config.resolve = config.resolve || {}
     config.resolve.alias = config.resolve.alias || {}
-    config.plugins = config.plugins || []
 
     config.resolve.alias = {
         ...config.resolve.alias,
         [`@project/${dllName}`]: path.resolve(config.context, `../${dllName}/${SOURCE_FOLDER}`)
     }
+}
+
+export const addDll = (
+    config: ProjectConfiguration,
+    dllName: string,
+    options?: Partial<webpack.DllReferencePlugin.Options>
+) => {
+    addAliases(config, dllName);
+    config.plugins = config.plugins || []
 
     config.plugins.push(
         new webpack.DllReferencePlugin({
             context: path.resolve(config.context, `../${dllName}`),
             manifest: path.resolve(config.context, `../${dllName}/${DIST_FOLDER}`, 'index.manifest.json'),
+            ...options
         })
     )
 

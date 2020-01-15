@@ -1,9 +1,9 @@
 {
     "compilerOptions": {
         "target": "es5",
+        "module": "commonjs",
         "moduleResolution": "node",
         "allowJs": false,
-        "declaration": true,
         "checkJs": false,
         "allowSyntheticDefaultImports": true,
         "strictBindCallApply": true,
@@ -15,15 +15,15 @@
         "noUnusedLocals": true,
         "pretty": true,
         "skipDefaultLibCheck": true,
-        "declarationMap": true,
         "disableSourceOfProjectReferenceRedirect": true,
-        "jsx": "react",
         "esModuleInterop": true,
+        "jsx": "react",
         "lib": [
             "ES2015"
         ],
         "types": [
-            "utils"
+            "utils",
+            "node"
         ],
         "typeRoots": [
             "../typings/src",

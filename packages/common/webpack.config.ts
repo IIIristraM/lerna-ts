@@ -1,3 +1,5 @@
+/// <reference path="../typings/src/webpack/index.d.ts" />
+
 import path from 'path';
 
 import { init, addDll, processTypescript } from '../webpack/src';

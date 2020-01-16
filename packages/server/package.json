@@ -7,10 +7,11 @@
     "license": "ISC",
     "private": true,
     "scripts": {
-        "build": "npm run build:render",
+        "build": "NODE_ENV=production TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
         "build:render": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack --config webpack.render.config.ts",
         "run:server": "tsnd --respawn -r tsconfig-paths/register ./src/index.tsx",
-        "clean": "rm -rf dist"
+        "clean": "rm -rf dist",
+        "copy": "cp -r dist ../../dist/server"
     },
     "dependencies": {
         "@project/vendors": "file:../vendors",

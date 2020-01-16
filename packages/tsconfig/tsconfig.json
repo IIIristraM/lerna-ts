@@ -22,8 +22,7 @@
             "ES2015"
         ],
         "types": [
-            "utils",
-            "node"
+            "utils"
         ],
         "typeRoots": [
             "../typings/src",

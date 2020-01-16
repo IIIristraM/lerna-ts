@@ -1,10 +1,13 @@
+/// <reference path="../typings/src/webpack/index.d.ts" />
+
 import path from 'path';
+import HardSourceWebpackPlugin from 'hard-source-webpack-plugin';
 
 import { init } from '../webpack/src';
 
 const NAME = 'vendors';
 
-export default init({
+const config = init({
     name: NAME,
     dll: true,
     context: path.resolve(__dirname),
@@ -15,3 +18,11 @@ export default init({
         'react-router-dom'
     ]
 });
+
+config.plugins.push(
+    new HardSourceWebpackPlugin({
+        cacheDirectory: path.resolve(`../../node_modules/.cache/hard-source-webpack-plugin/${NAME}`)
+    })
+)
+
+export default config;

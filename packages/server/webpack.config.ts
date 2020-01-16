@@ -14,14 +14,29 @@ const config = init({
     hot: false,
     target: 'node',
     entry: [
-        './src/middlewares/render'
+        './src/index'
     ]
 });
-
-config.output.libraryTarget = 'commonjs2';
 
 processTypescript(config);
 addAliases(config, clientConfig.name);
 addAliases(config, commonConfig.name);
+
+// exclude webpack dependencies from production build
+config.externals.push(
+    function (context, request, callback) {
+        if (/[.]\/middlewares\/dev/.test(request)) {
+            return callback(null, 'commonjs ' + request);
+        }
+
+        (callback as Function)();
+    }
+)
+
+// allow __dirname and __filename keep common node behavior
+config.node = {
+    __dirname: false,
+    __filename: false
+}
 
 export default config;

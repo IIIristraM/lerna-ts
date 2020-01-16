@@ -1,4 +1,6 @@
 # lerna-ts
 
-- `npm run init`
-- `npm start`
+- install dependencies `npm run init`
+- run dev locally `npm start`
+- build prod `npm run build`
+- run prod locally `npm run prod` (build first required)

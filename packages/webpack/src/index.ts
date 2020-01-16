@@ -1,10 +1,12 @@
 import path from 'path';
 import webpack, { ProjectConfiguration } from 'webpack';
 import glob from 'glob';
+import nodeExternals from 'webpack-node-externals';
+import ManifestPlugin from 'webpack-manifest-plugin';
 
 const DIST_FOLDER = 'dist';
 const SOURCE_FOLDER = 'src';
-const MODE = 'development';
+const MODE = process.env.NODE_ENV || 'development';
 
 export const createWatchIgnore = () => [
     /node_modules/,
@@ -12,24 +14,37 @@ export const createWatchIgnore = () => [
     /\.json/
 ]
 
+type Target = webpack.Configuration['target'];
+
 type InitOptions = {
     name: string,
     dll?: boolean,
     context: string,
     entry?: string[],
-    hot?: boolean
+    hot?: boolean,
+    target?: Target
+}
+
+const createFileName = (target: Target, dll: boolean) => {
+    const parts = ['[name]'];
+    if (dll) parts.push('dll');
+    if (target === 'web') parts.push('[hash]');
+
+    return [...parts, 'js'].join('.');
 }
 
 export const init = ({
     name = '',
     dll = false,
     context = '',
+    target = 'web',
     entry,
     hot
 }: InitOptions) => {
     const config: ProjectConfiguration = {
         name,
         mode: MODE,
+        target,
         context,
         entry: {
             index: entry || (
@@ -39,17 +54,52 @@ export const init = ({
             )
         },
         output: {
-            filename: dll ? '[name].bundle.dll.js' : '[name].bundle.js',
+            filename: createFileName(target, dll),
             path: path.join(context, DIST_FOLDER),
-            publicPath: `/static/${name}/`
+            publicPath: `/static/${name}/`,
+            pathinfo: false
         },
         resolve: {
             extensions: ['.ts', '.tsx', '.js', '.json']
         },
-        plugins: [],
+        plugins: [
+            new webpack.DefinePlugin({
+                NODE_ENV: MODE
+            })
+        ],
         watchOptions: {
             aggregateTimeout: 500
-        }
+        },
+        externals: []
+    }
+
+    if (target === 'web' && MODE === 'production') {
+        config.plugins.push(
+            new ManifestPlugin({
+                filter: (desc) => {
+                    return desc.name ? /.js$/.test(desc.name) : false
+                },
+                generate: (seed, files, entrypoints) => {
+                    const manifest: Manifest = {
+                        timestamp: Date.now(),
+                        resources: files.reduce((manifest, { path }) => {
+                            manifest.push(path);
+                            return manifest;
+                        }, [] as string[])
+                    }
+
+                    return manifest;
+                }
+            })
+        )
+    }
+
+    if (target === 'node') {
+        config.externals.push(
+            nodeExternals({
+                modulesDir: '../../node_modules'
+            })
+        )
     }
 
     if (dll) {
@@ -117,7 +167,6 @@ export const addDll = (
     options?: Partial<webpack.DllReferencePlugin.Options>
 ) => {
     addAliases(config, dllName);
-    config.plugins = config.plugins || []
 
     config.plugins.push(
         new webpack.DllReferencePlugin({

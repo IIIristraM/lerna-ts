@@ -3,9 +3,11 @@
     "compilerOptions": {
         "baseUrl": ".",
         "rootDir": "./src",
-        "outDir": "./dist",
+        "outDir": "./build",
         "types": [
-            "webpack"
+            "node",
+            "webpack",
+            "utils"
         ]
     },
     "include": [

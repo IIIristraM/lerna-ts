@@ -5,10 +5,8 @@ import { StaticRouter } from 'react-router';
 
 import App from '@project/client/app';
 
-import { PUBLIC_PATH, clientConfigs } from './consts';
-
 export default function render() {
-    const Template: React.FC<{}> = ({ children }) => (
+    const Template: React.FC<{ resources: string[] }> = ({ children, resources }) => (
         <html>
             <head>
                 <style>
@@ -26,16 +24,18 @@ export default function render() {
                 <div id="app">
                     {children}
                 </div>
-                {clientConfigs.map(({ name, output: { library } }) => (
-                    <script key={name} src={`${PUBLIC_PATH}${name}/index.bundle${library ? '.dll' : ''}.js`}></script>
-                ))}
+                {resources.map((resource) => {
+                    return <script key={resource} src={resource}></script>
+                })}
             </body>
         </html>
     )
 
     return function (req, res, next) {
+        const { locals: { resources } } = res;
+
         ReactDOMServer.renderToNodeStream(
-            <Template>
+            <Template resources={resources}>
                 <StaticRouter location={req.url}>
                     <App />
                 </StaticRouter>

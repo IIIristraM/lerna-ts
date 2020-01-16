@@ -6,8 +6,9 @@
     "license": "ISC",
     "private": true,
     "scripts": {
-        "build": "npm run build:dll",
+        "build": "NODE_ENV=production npm run build:dll",
         "build:dll": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
-        "clean": "rm -rf dist"
+        "clean": "rm -rf dist",
+        "copy": "cp -r dist ../../dist/static/vendors"
     }
 }

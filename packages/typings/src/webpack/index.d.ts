@@ -23,5 +23,6 @@ declare module 'webpack' {
         output: webpack.Output;
         plugins: webpack.Plugin[];
         resolve: Resolve;
+        externals: webpack.ExternalsElement[];
     }
 }

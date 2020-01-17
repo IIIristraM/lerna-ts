@@ -1,14 +1,10 @@
 import React from 'react';
 
-const style: React.CSSProperties = {
-    width: '100%',
-    minHeight: '100vh',
-    padding: 20
-}
+import { content } from './styles.css';
 
 const Content: React.FC<{}> = ({ children }) => {
     return (
-        <div style={style}>
+        <div className={content}>
             {children}
         </div>
     );

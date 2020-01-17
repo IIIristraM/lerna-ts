@@ -5,37 +5,34 @@ import { StaticRouter } from 'react-router';
 
 import App from '@project/client/app';
 
-export default function render() {
-    const Template: React.FC<{ resources: string[] }> = ({ children, resources }) => (
+const Template: React.FC<{ styles?: string[], scripts?: string[] }> = ({
+    children,
+    styles = [],
+    scripts = []
+}) => (
         <html>
             <head>
-                <style>
-                    {`* {
-                        box-sizing: border-box;
-                    }
-                    
-                    html, body {
-                        padding: 0;
-                        margin: 0;
-                    }`}
-                </style>
+                {styles.map((style) => {
+                    return <link key={style} rel="stylesheet" href={style}></link>
+                })}
             </head>
             <body>
                 <div id="app">
                     {children}
                 </div>
-                {resources.map((resource) => {
-                    return <script key={resource} src={resource}></script>
+                {scripts.map((script) => {
+                    return <script key={script} src={script}></script>
                 })}
             </body>
         </html>
     )
 
+export default function render() {
     return function (req, res, next) {
-        const { locals: { resources } } = res;
+        const { locals: { scripts, styles } } = res;
 
         ReactDOMServer.renderToNodeStream(
-            <Template resources={resources}>
+            <Template scripts={scripts} styles={styles}>
                 <StaticRouter location={req.url}>
                     <App />
                 </StaticRouter>

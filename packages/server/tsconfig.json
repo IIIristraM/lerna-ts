@@ -1,6 +1,7 @@
 {
     "extends": "../tsconfig/tsconfig.json",
     "compilerOptions": {
+        "module": "commonjs",
         "outDir": "build",
         "baseUrl": ".",
         "types": [
@@ -9,7 +10,8 @@
             "react",
             "react-router",
             "react-router-dom",
-            "utils"
+            "utils",
+            "css"
         ],
         "paths": {
             "@project/common/*": [

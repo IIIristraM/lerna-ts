@@ -2,7 +2,7 @@
 
 import path from 'path';
 
-import { init, processTypescript, addAliases } from '../webpack/src';
+import { init, processTypescript, addAliases, processStyles } from '../webpack/src';
 import commonConfig from '../common/webpack.config';
 import clientConfig from '../client/webpack.config';
 
@@ -19,6 +19,7 @@ const config = init({
 });
 
 processTypescript(config);
+processStyles(config)
 addAliases(config, clientConfig.name);
 addAliases(config, commonConfig.name);
 

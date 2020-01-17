@@ -3,6 +3,9 @@ import webpack, { ProjectConfiguration } from 'webpack';
 import glob from 'glob';
 import nodeExternals from 'webpack-node-externals';
 import ManifestPlugin from 'webpack-manifest-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import TerserJSPlugin from 'terser-webpack-plugin';
+import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
 
 const DIST_FOLDER = 'dist';
 const SOURCE_FOLDER = 'src';
@@ -25,12 +28,14 @@ type InitOptions = {
     target?: Target
 }
 
-const createFileName = (target: Target, dll: boolean) => {
-    const parts = ['[name]'];
-    if (dll) parts.push('dll');
-    if (target === 'web') parts.push('[hash]');
+const createFileName = (config: ProjectConfiguration, ext: string) => {
+    const { target, output: { library }, mode } = config;
 
-    return [...parts, 'js'].join('.');
+    const parts = ['[name]'];
+    if (!!library) parts.push('dll');
+    if (target === 'web' && mode === 'production') parts.push('[hash]');
+
+    return [...parts, ext].join('.');
 }
 
 export const init = ({
@@ -54,7 +59,6 @@ export const init = ({
             )
         },
         output: {
-            filename: createFileName(target, dll),
             path: path.join(context, DIST_FOLDER),
             publicPath: `/static/${name}/`,
             pathinfo: false
@@ -77,7 +81,7 @@ export const init = ({
         config.plugins.push(
             new ManifestPlugin({
                 filter: (desc) => {
-                    return desc.name ? /.js$/.test(desc.name) : false
+                    return desc.name ? /\.(js|css)$/.test(desc.name) : false
                 },
                 generate: (seed, files, entrypoints) => {
                     const manifest: Manifest = {
@@ -92,6 +96,10 @@ export const init = ({
                 }
             })
         )
+
+        config.optimization = {
+            minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})]
+        }
     }
 
     if (target === 'node') {
@@ -132,6 +140,8 @@ export const init = ({
         ])
     }
 
+    config.output.filename = createFileName(config, 'js');
+
     return config;
 }
 
@@ -146,6 +156,46 @@ export const processTypescript = (config: ProjectConfiguration) => {
         options: {
             projectReferences: true
         }
+    })
+
+    return config;
+}
+
+export const processStyles = (config: ProjectConfiguration) => {
+    config.module = config.module || { rules: [] }
+    config.module.rules = config.module.rules || []
+
+    // const { target, output: { library } } = config;
+    const loaders: webpack.RuleSetUseItem[] = []
+    if (config.target === 'web') {
+        loaders.push({
+            loader: MiniCssExtractPlugin.loader,
+            options: {
+                hmr: config.mode === 'development',
+                reloadAll: true
+            }
+        })
+
+        config.plugins.push(
+            new MiniCssExtractPlugin({
+                filename: createFileName(config, 'css'),
+                esModule: true
+            })
+        )
+    }
+
+    config.module.rules.push({
+        test: /\.css$/,
+        use: [...loaders, {
+            loader: 'css-loader',
+            options: {
+                modules: {
+                    context: __dirname, // required for identical hashes
+                    localIdentName: config.mode === 'development' ? '[local]__[hash:base64]' : '[hash:base64]'
+                },
+                onlyLocals: config.target === 'node'
+            }
+        }]
     })
 
     return config;

@@ -4,6 +4,8 @@ import { BrowserRouter } from 'react-router-dom';
 
 import App from './app';
 
+import './styles.css';
+
 const ROOT_ID = "app" as const;
 
 const appEl = document.getElementById(ROOT_ID);

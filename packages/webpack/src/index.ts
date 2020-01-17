@@ -64,6 +64,9 @@ export const init = ({
             pathinfo: false
         },
         resolve: {
+            alias: MODE === 'development' ? {
+                'react-dom': '@hot-loader/react-dom',
+            } : {},
             extensions: ['.ts', '.tsx', '.js', '.json']
         },
         plugins: [

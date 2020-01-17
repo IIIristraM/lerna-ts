@@ -35,7 +35,9 @@ const parseWebpackStats = (stats: Stats) => {
             })
         }
 
-        return resources;
+        return resources.filter(r => {
+            return !r.includes('hot-update')
+        });
     }, [] as string[])
 }
 
@@ -61,9 +63,12 @@ const parseManifests = cacheFn(() => {
 });
 
 export const exposeResources: RequestHandler = (req, res, next) => {
-    res.locals.resources = res.locals.webpackStats
+    const resources = res.locals.webpackStats
         ? parseWebpackStats(res.locals.webpackStats)
         : parseManifests();
+
+    res.locals.scripts = resources.filter(r => /\.js$/.test(r));
+    res.locals.styles = resources.filter(r => /\.css$/.test(r));
 
     next();
 }

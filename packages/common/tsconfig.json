@@ -7,7 +7,12 @@
         "composite": true,
         "declaration": true,
         "declarationMap": true,
-        "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo"
+        "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
+        "types": [
+            "utils",
+            "css",
+            "node"
+        ]
     },
     "include": [
         "src/**/*"

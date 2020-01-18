@@ -18,7 +18,8 @@
             "react",
             "react-router",
             "react-router-dom",
-            "css"
+            "css",
+            "client"
         ],
         "paths": {
             "@project/common/*": [

@@ -3,13 +3,23 @@ import ReactDOMServer from 'react-dom/server';
 import { RequestHandler } from 'express';
 import { StaticRouter } from 'react-router';
 import { Readable } from 'stream';
+import { Provider } from 'react-redux';
 
 import App from '@project/client/app';
+import { createStore } from '@project/common/infrastructure/store';
+import { CommonState } from '@project/common/infrastructure/reducers';
 
-const Template: React.FC<{ styles?: string[], scripts?: string[] }> = ({
+type TemplateProps = {
+    styles: string[];
+    scripts: string[];
+    state: CommonState;
+}
+
+const Template: React.FC<TemplateProps> = ({
     children,
-    styles = [],
-    scripts = []
+    styles,
+    scripts,
+    state
 }) => (
         <html lang="en">
             <head>
@@ -24,6 +34,10 @@ const Template: React.FC<{ styles?: string[], scripts?: string[] }> = ({
                 <div id="app">
                     {children}
                 </div>
+                <script
+                    id="state"
+                    dangerouslySetInnerHTML={{ __html: `window.__STATE_FROM_SERVER__ = ${JSON.stringify(state)}` }}
+                />
                 {scripts.map((script) => {
                     return <script key={script} src={script}></script>
                 })}
@@ -31,17 +45,26 @@ const Template: React.FC<{ styles?: string[], scripts?: string[] }> = ({
         </html>
     )
 
+const INITIAL_STATE = {
+    user: {
+        login: 'noname'
+    }
+}
+
 export default function render() {
     return function (req, res, next) {
         const { locals: { scripts, styles } } = res;
+        const store = createStore(INITIAL_STATE);
 
         const prefixStream = Readable.from(['<!DOCTYPE html>']);
 
         const appStram = ReactDOMServer.renderToNodeStream(
-            <Template scripts={scripts} styles={styles}>
-                <StaticRouter location={req.url}>
-                    <App />
-                </StaticRouter>
+            <Template scripts={scripts} styles={styles} state={store.getState()}>
+                <Provider store={store}>
+                    <StaticRouter location={req.url}>
+                        <App />
+                    </StaticRouter>
+                </Provider>
             </Template>
         );
 

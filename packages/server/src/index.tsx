@@ -1,10 +1,12 @@
 import express from 'express';
+import compression from 'compression';
 
 import { PORT, PUBLIC_PATH } from './consts';
 import { exposeResources } from './middlewares/expose-resources';
 import { serveStatic } from './middlewares/serve-static';
 
 const app = express();
+
 let promise = Promise.resolve();
 
 if (process.env.NODE_ENV === 'development') {
@@ -12,6 +14,7 @@ if (process.env.NODE_ENV === 'development') {
     configDev(app);
 } else {
     promise = import('./middlewares/render').then(({ default: render }) => {
+        app.use(compression());
         app.get(`${PUBLIC_PATH}*`, serveStatic);
         app.use(exposeResources);
         app.use(render());

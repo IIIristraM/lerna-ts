@@ -11,8 +11,13 @@
         "types": [
             "utils",
             "css",
-            "node"
-        ]
+            "node",
+            "client"
+        ],
+        "lib": [
+            "ES2015",
+            "DOM"
+        ],
     },
     "include": [
         "src/**/*"

@@ -1,6 +1,9 @@
 import React from 'react';
 import ReactDOM from "react-dom";
 import { BrowserRouter } from 'react-router-dom';
+import { Provider } from 'react-redux';
+
+import { createStore } from '@project/common/infrastructure/store';
 
 import App from './app';
 
@@ -17,8 +20,14 @@ if (appEl === null) {
     );
 }
 
+const store = createStore(window.__STATE_FROM_SERVER__);
+delete window.__STATE_FROM_SERVER__;
+document.getElementById('state')?.remove();
+
 ReactDOM.hydrate((
-    <BrowserRouter>
-        <App />
-    </BrowserRouter>
+    <Provider store={store}>
+        <BrowserRouter>
+            <App />
+        </BrowserRouter>
+    </Provider>
 ), appEl);

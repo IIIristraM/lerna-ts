@@ -11,11 +11,12 @@
         "tsc:clean": "npx lerna run tsc:clean",
         "build": "npx lerna run --stream clean && npx lerna run --stream build && npm run copy",
         "copy": "./scripts/init-build-folder.sh && npx lerna run --stream copy",
-        "prod": "node ./dist/server/index.js"
+        "prod": "node ./dist/server/index.js",
+        "release": "CI=true npx lerna version --conventional-commits --include-merged-tags --yes"
     },
     "husky": {
         "hooks": {
-            "prepare-commit-msg": "exec < /dev/tty && git cz --hook || true"
+            "prepare-commit-msg": "./scripts/prepare-commit-msg.sh"
         }
     },
     "author": "",

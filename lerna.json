@@ -1,6 +1,18 @@
 {
     "packages": [
-        "packages/*"
+        "packages/*",
+        "./"
     ],
+    "command": {
+        "bootstrap": {
+            "npmClientArgs": ["--no-package-lock"]
+        },
+        "exec": {
+            "ignore": ["lerna-ts"]
+        },
+        "version": {
+            "ignoreChanges": ["**/package-lock.json"]
+        }
+    },
     "version": "independent"
 }

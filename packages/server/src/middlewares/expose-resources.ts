@@ -23,7 +23,7 @@ const parseWebpackStats = (stats: Stats) => {
                 resources.push(`${publicPath}${file}`)
             })
         } else {
-            Object.values(files).forEach(file => {
+            Object.values(files).forEach((file: string | string[]) => {
                 if (typeof file === 'string') {
                     resources.push(`${publicPath}${file}`)
                     return;

@@ -24,11 +24,10 @@ export function configDev(app: Express) {
     app.use(webpackDevMiddleware(compiler, configs));
     app.use(exposeResources);
 
-    const clienCompiler = compiler.compilers.find(c => c.name === clientConfig.name);
-    if (clienCompiler) {
-        app.use(WebpackHotMiddleware(clienCompiler, {
-            log: console.log,
-            noInfo: true
+    const clientCompiler = compiler.compilers.find(c => c.name === clientConfig.name);
+    if (clientCompiler) {
+        app.use(WebpackHotMiddleware(clientCompiler, {
+            log: console.log
         }));
     }
 

@@ -1,6 +1,6 @@
 {
     "name": "@project/client",
-    "version": "0.0.0",
+    "version": "0.0.1",
     "description": "",
     "main": "dist/index.js",
     "author": "iiiristram",
@@ -15,7 +15,7 @@
         "copy": "cp -r dist ../../dist/static/client"
     },
     "dependencies": {
-        "@project/vendors": "file:../vendors",
-        "@project/common": "file:../common"
+        "@project/common": "file:../common",
+        "@project/vendors": "file:../vendors"
     }
 }

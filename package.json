@@ -4,20 +4,15 @@
     "description": "",
     "main": "app.js",
     "scripts": {
-        "init": "npm run clean:deps && npx lerna bootstrap",
+        "init": "npm run clean:deps && npx lerna bootstrap --no-ci",
         "tsc:watch": "npx lerna run tsc:clean && npx lerna run --stream tsc:watch",
         "start": "npx lerna run --stream clean && npx lerna run --stream build:dll && npx lerna run --stream run:server",
-        "clean:deps": "npx lerna exec 'rm -rf node_modules' && rm -rf node_modules",
+        "clean:deps": "npx lerna exec 'rm -rf node_modules package-lock.json' && rm -rf node_modules package-lock.json",
         "tsc:clean": "npx lerna run tsc:clean",
         "build": "npx lerna run --stream clean && npx lerna run --stream build && npm run copy",
         "copy": "./scripts/init-build-folder.sh && npx lerna run --stream copy",
         "prod": "node ./dist/server/index.js",
         "release": "CI=true npx lerna version --conventional-commits --include-merged-tags --yes"
-    },
-    "husky": {
-        "hooks": {
-            "prepare-commit-msg": "./scripts/prepare-commit-msg.sh"
-        }
     },
     "author": "",
     "license": "ISC",
@@ -52,12 +47,9 @@
         "@types/webpack-hot-middleware": "^2.25.0",
         "@types/webpack-manifest-plugin": "^2.1.0",
         "@types/webpack-node-externals": "^1.7.0",
-        "commitizen": "^4.1.2",
         "css-loader": "^3.4.2",
-        "cz-lerna-changelog": "^2.0.3",
         "glob": "^7.1.6",
         "hard-source-webpack-plugin": "^0.13.1",
-        "husky": "^4.2.5",
         "lerna": "^3.22.1",
         "mini-css-extract-plugin": "^0.9.0",
         "open": "^7.0.0",
@@ -76,11 +68,6 @@
         "webpack-hot-server-middleware": "^0.6.0",
         "webpack-manifest-plugin": "^2.2.0",
         "webpack-node-externals": "^1.7.2"
-    },
-    "config": {
-        "commitizen": {
-            "path": "./node_modules/cz-lerna-changelog"
-        }
     },
     "private": true
 }

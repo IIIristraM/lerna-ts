@@ -23,6 +23,6 @@ if (process.env.NODE_ENV === 'development') {
 
 promise.then(() => {
     app.listen(PORT, function () {
-        console.log('----------------- LISTENING -----------------');
+        console.log('----------------- _LISTENING_ -----------------');
     });
 });

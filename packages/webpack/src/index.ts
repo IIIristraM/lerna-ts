@@ -77,7 +77,11 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
         config.plugins.push(
             new ManifestPlugin({
                 filter: desc => {
-                    return desc.name ? /\.(js|css)$/.test(desc.name) : false;
+                    return desc.name
+                        ? /\.(js|css)$/.test(desc.name) &&
+                              // ts-loader emits builded files
+                              !desc.name.includes('/build/')
+                        : false;
                 },
                 generate: (seed, files, entrypoints) => {
                     const manifest: Manifest = {

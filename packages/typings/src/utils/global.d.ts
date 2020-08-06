@@ -1,7 +1,6 @@
-
 type Double = number;
 
 type Manifest = {
-    timestamp: number,
-    resources: string[]
-}
+    timestamp: number;
+    resources: string[];
+};

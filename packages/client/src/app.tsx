@@ -13,13 +13,15 @@ const ROUTES = [
     { url: '/', page: HomePage, text: 'Home' },
     { url: '/contacts', page: ContactsPage, text: 'Contacts' },
     { url: '/about', page: AboutPage, text: 'About' },
-]
+];
 
 const App: React.FC<{}> = () => (
     <Body>
         <Header>
             {ROUTES.map(({ url, text }) => (
-                <Link key={url} to={url}>{text}</Link>
+                <Link key={url} to={url}>
+                    {text}
+                </Link>
             ))}
         </Header>
         <Content>
@@ -30,6 +32,6 @@ const App: React.FC<{}> = () => (
             </Switch>
         </Content>
     </Body>
-)
+);
 
 export default hot(App);

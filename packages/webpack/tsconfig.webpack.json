@@ -2,11 +2,7 @@
     "extends": "../tsconfig/tsconfig.json",
     "compilerOptions": {
         "module": "commonjs",
-        "types": [
-            "node",
-            "webpack",
-            "utils"
-        ]
+        "types": ["node", "webpack", "utils"]
     },
     "files": []
 }

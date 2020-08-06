@@ -10,11 +10,11 @@ const NAME = 'common';
 const config = init({
     name: NAME,
     dll: true,
-    context: path.resolve(__dirname)
+    context: path.resolve(__dirname),
 });
 
-processTypescript(config)
-processStyles(config)
-addDll(config, vendorsConfig.name)
+processTypescript(config);
+processStyles(config);
+addDll(config, vendorsConfig.name);
 
 export default config;

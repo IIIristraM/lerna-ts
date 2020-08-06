@@ -3,8 +3,8 @@ import { combineReducers } from 'redux';
 import userReducer from './user';
 
 const rootReducer = combineReducers({
-    user: userReducer
-})
+    user: userReducer,
+});
 
 export type CommonState = ReturnType<typeof rootReducer>;
 

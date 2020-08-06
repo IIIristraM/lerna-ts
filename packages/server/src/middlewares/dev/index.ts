@@ -11,12 +11,7 @@ import serverRenderConfig from '../../../webpack.render.config';
 import webpackDevMiddleware from './webpack-dev';
 import { exposeResources } from '../expose-resources';
 
-const configs: ProjectConfiguration[] = [
-    vendorsConfig,
-    commonConfig,
-    clientConfig,
-    serverRenderConfig
-];
+const configs: ProjectConfiguration[] = [vendorsConfig, commonConfig, clientConfig, serverRenderConfig];
 
 const compiler = webpack(configs);
 
@@ -26,12 +21,16 @@ export function configDev(app: Express) {
 
     const clientCompiler = compiler.compilers.find(c => c.name === clientConfig.name);
     if (clientCompiler) {
-        app.use(WebpackHotMiddleware(clientCompiler, {
-            log: console.log
-        }));
+        app.use(
+            WebpackHotMiddleware(clientCompiler, {
+                log: console.log,
+            }),
+        );
     }
 
-    app.use(WebpackHotServerMiddleware(compiler, {
-        chunkName: 'index'
-    }));
+    app.use(
+        WebpackHotServerMiddleware(compiler, {
+            chunkName: 'index',
+        }),
+    );
 }

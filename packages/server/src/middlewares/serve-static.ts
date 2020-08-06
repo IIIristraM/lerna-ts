@@ -7,5 +7,5 @@ export const serveStatic: RequestHandler = (req, res) => {
     const [, pkg, ...pathToResource] = req.url.split('/').filter(Boolean);
     const filePath = path.resolve(STATIC_PATH, pkg, ...pathToResource);
 
-    res.sendFile(filePath)
-} 
+    res.sendFile(filePath);
+};

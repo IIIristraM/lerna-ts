@@ -5,8 +5,8 @@ declare module 'webpack' {
     interface NodeWatchFileSystem {
         watcher?: Watchpack;
         wfs?: {
-            watcher: Watchpack
-        }
+            watcher: Watchpack;
+        };
     }
 
     interface Compiler {
@@ -15,14 +15,14 @@ declare module 'webpack' {
 
     export type ProjectConfiguration = Configuration & {
         name: string;
-        context: string
+        context: string;
         entry: {
             index: string[];
             [x: string]: string[];
-        }
+        };
         output: webpack.Output;
         plugins: webpack.Plugin[];
         resolve: Resolve;
         externals: webpack.ExternalsElement[];
-    }
+    };
 }

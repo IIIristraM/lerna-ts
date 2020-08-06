@@ -9,25 +9,11 @@
         "baseUrl": ".",
         "rootDir": "src",
         "outDir": "build",
-        "lib": [
-            "ES2015",
-            "DOM"
-        ],
-        "types": [
-            "utils",
-            "react",
-            "react-router",
-            "react-router-dom",
-            "css",
-            "client"
-        ],
+        "lib": ["ES2015", "DOM"],
+        "types": ["utils", "react", "react-router", "react-router-dom", "css", "client"],
         "paths": {
-            "@project/common/*": [
-                "../common/src/*"
-            ]
+            "@project/common/*": ["../common/src/*"]
         }
     },
-    "include": [
-        "src/**/*"
-    ]
+    "include": ["src/**/*"]
 }

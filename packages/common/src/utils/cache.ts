@@ -6,5 +6,5 @@ export const cacheFn = <TArgs extends any[], TRes>(func: (...args: TArgs) => TRe
         hash[key] = hash[key] || func(...args);
 
         return hash[key];
-    }
-}
+    };
+};

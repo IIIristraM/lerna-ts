@@ -4,11 +4,7 @@
         "baseUrl": ".",
         "rootDir": "./src",
         "outDir": "./build",
-        "lib": [
-            "DOM"
-        ]
+        "lib": ["DOM"]
     },
-    "include": [
-        "./src/**/*"
-    ]
+    "include": ["./src/**/*"]
 }

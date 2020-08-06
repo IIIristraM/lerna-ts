@@ -5,13 +5,24 @@
     ],
     "command": {
         "bootstrap": {
-            "npmClientArgs": ["--no-package-lock"]
+            "npmClientArgs": [
+                "--no-package-lock"
+            ]
         },
         "exec": {
-            "ignore": ["lerna-ts"]
+            "ignore": [
+                "lerna-ts"
+            ]
+        },
+        "run": {
+            "ignore": [
+                "lerna-ts"
+            ]
         },
         "version": {
-            "ignoreChanges": ["**/package-lock.json"]
+            "ignoreChanges": [
+                "**/package-lock.json"
+            ]
         }
     },
     "version": "independent"

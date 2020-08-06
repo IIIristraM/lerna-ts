@@ -13,15 +13,13 @@ const config = init({
     context: path.resolve(__dirname),
     hot: false,
     target: 'node',
-    entry: [
-        './src/middlewares/render'
-    ]
+    entry: ['./src/middlewares/render'],
 });
 
 config.output.libraryTarget = 'commonjs2';
 
 processTypescript(config);
-processStyles(config)
+processStyles(config);
 addAliases(config, clientConfig.name);
 addAliases(config, commonConfig.name);
 

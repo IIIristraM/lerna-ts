@@ -12,11 +12,11 @@ export default function webpackDevMiddleware(compiler: MultiCompiler, configs: P
         stats: 'errors-warnings',
         watchOptions: {
             aggregateTimeout: 500,
-            ignored: createWatchIgnore()
+            ignored: createWatchIgnore(),
         },
         logLevel: 'warn',
         writeToDisk: true, // required for IDE handle TS errors
-        serverSideRender: true
+        serverSideRender: true,
     });
 
     compiler.hooks.watchRun.tapPromise('ChangesWatcher', async () => {
@@ -26,17 +26,17 @@ export default function webpackDevMiddleware(compiler: MultiCompiler, configs: P
             const { watchFileSystem } = compiler.compilers[i];
             const { name } = configs[i];
 
-            const watcher = watchFileSystem?.watcher || watchFileSystem?.wfs?.watcher
+            const watcher = watchFileSystem?.watcher || watchFileSystem?.wfs?.watcher;
             if (!watcher) {
                 return;
             }
 
-            const changedFile = Object.keys(watcher.mtimes)
+            const changedFile = Object.keys(watcher.mtimes);
             console.log(name, changedFile);
         }
 
         return Promise.resolve();
-    })
+    });
 
     webpackDevMiddlewareInstance.waitUntilValid(async () => {
         const url = `http://localhost:${PORT}/`;
@@ -44,9 +44,9 @@ export default function webpackDevMiddleware(compiler: MultiCompiler, configs: P
         try {
             await open(url, { url: true, wait: true });
         } catch {
-            console.log(`Site is available at ${url}`)
+            console.log(`Site is available at ${url}`);
         }
-    })
+    });
 
     return webpackDevMiddlewareInstance;
 }

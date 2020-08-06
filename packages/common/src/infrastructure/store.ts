@@ -7,7 +7,7 @@ let __store: Store<CommonState>;
 export function createStore(preloadedState: CommonState) {
     __store = createStoreBase(rootReducer, preloadedState);
     return getStore();
-};
+}
 
 export default function getStore() {
     if (!__store) {
@@ -15,4 +15,4 @@ export default function getStore() {
     }
 
     return __store;
-};
+}

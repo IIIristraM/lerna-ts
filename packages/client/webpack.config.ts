@@ -10,16 +10,16 @@ const NAME = 'client';
 
 const config = init({
     name: NAME,
-    context: path.resolve(__dirname)
+    context: path.resolve(__dirname),
 });
 
 if (config.mode === 'development') {
-    config.entry['index'].unshift('react-hot-loader/patch')
+    config.entry['index'].unshift('react-hot-loader/patch');
 }
 
-processTypescript(config)
-processStyles(config)
-addDll(config, vendorsConfig.name)
-addDll(config, commonConfig.name)
+processTypescript(config);
+processStyles(config);
+addDll(config, vendorsConfig.name);
+addDll(config, commonConfig.name);
 
 export default config;

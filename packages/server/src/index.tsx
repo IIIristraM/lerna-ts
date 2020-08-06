@@ -18,7 +18,7 @@ if (process.env.NODE_ENV === 'development') {
         app.get(`${PUBLIC_PATH}*`, serveStatic);
         app.use(exposeResources);
         app.use(render());
-    })
+    });
 }
 
 promise.then(() => {

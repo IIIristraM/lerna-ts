@@ -5,13 +5,7 @@
         "baseUrl": ".",
         "rootDir": "./src",
         "outDir": "./build",
-        "types": [
-            "node",
-            "webpack",
-            "utils"
-        ]
+        "types": ["node", "webpack", "utils"]
     },
-    "include": [
-        "./src/**/*"
-    ]
+    "include": ["./src/**/*"]
 }

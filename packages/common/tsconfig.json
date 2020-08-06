@@ -8,18 +8,8 @@
         "declaration": true,
         "declarationMap": true,
         "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
-        "types": [
-            "utils",
-            "css",
-            "node",
-            "client"
-        ],
-        "lib": [
-            "ES2015",
-            "DOM"
-        ],
+        "types": ["utils", "css", "node", "client"],
+        "lib": ["ES2015", "DOM"]
     },
-    "include": [
-        "src/**/*"
-    ]
+    "include": ["src/**/*"]
 }

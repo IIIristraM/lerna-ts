@@ -18,16 +18,8 @@
         "disableSourceOfProjectReferenceRedirect": true,
         "esModuleInterop": true,
         "jsx": "react",
-        "lib": [
-            "ES2015"
-        ],
-        "types": [
-            "utils",
-            "css"
-        ],
-        "typeRoots": [
-            "../typings/src",
-            "../../node_modules/@types"
-        ]
+        "lib": ["ES2015"],
+        "types": ["utils", "css"],
+        "typeRoots": ["../typings/src", "../../node_modules/@types"]
     }
 }

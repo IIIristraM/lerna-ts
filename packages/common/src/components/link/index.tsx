@@ -5,7 +5,9 @@ import { link } from './styles.css';
 
 const Link: React.FC<LinkProps> = ({ children, ...rest }) => {
     return (
-        <RouterLink {...rest} className={link}>{children}</RouterLink>
+        <RouterLink {...rest} className={link}>
+            {children}
+        </RouterLink>
     );
 };
 

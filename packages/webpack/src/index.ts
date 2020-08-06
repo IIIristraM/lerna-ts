@@ -79,7 +79,7 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
                 filter: desc => {
                     return desc.name
                         ? /\.(js|css)$/.test(desc.name) &&
-                              // ts-loader emits builed files
+                              // ts-loader emits builded files
                               !desc.name.includes('/build/')
                         : false;
                 },

@@ -9,7 +9,7 @@
     "scripts": {
         "build": "NODE_ENV=production TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
         "build:render": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack --config webpack.render.config.ts",
-        "run:server": "tsnd --respawn -r tsconfig-paths/register ./src/index.tsx",
+        "run:server": "NODE_ENV=development tsnd --respawn -r tsconfig-paths/register ./src/index.tsx",
         "clean": "rm -rf dist",
         "copy": "cp -r dist ../../dist/server"
     },

@@ -1,0 +1,29 @@
+{
+    "extends": "../tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "baseUrl": ".",
+        "rootDir": "src",
+        "outDir": "build",
+        "composite": true,
+        "declaration": true,
+        "declarationMap": true,
+        "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
+        "types": [
+            "utils",
+            "node",
+            "react",
+            "client",
+            "jest"
+        ],
+        "lib": [
+            "ES2015",
+            "DOM"
+        ]
+    },
+    "include": [
+        "src/**/*"
+    ],
+    "exclude": [
+        "**/__test__/**"
+    ]
+}

@@ -18,6 +18,7 @@ const config = init({
 
 processTypescript(config);
 processStyles(config);
+addAliases(config, 'tools');
 addAliases(config, clientConfig.name);
 addAliases(config, commonConfig.name);
 

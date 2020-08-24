@@ -10,3 +10,7 @@ declare namespace NodeJS {
 }
 
 declare const NODE_ENV: NodeEnv;
+
+declare interface NodeRequire {
+    resolveWeak: (path: string) => string;
+}

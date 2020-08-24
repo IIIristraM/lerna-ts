@@ -7,7 +7,7 @@
     "private": true,
     "scripts": {
         "build": "NODE_ENV=production npm run build:dll",
-        "build:dll": "TS_NODE_PROJECT=\"../webpack/tsconfig.webpack.json\" webpack",
+        "build:dll": "../../scripts/build.sh",
         "clean": "rm -rf dist",
         "copy": "cp -r dist ../../dist/static/vendors"
     }

@@ -1,3 +1,7 @@
 import React from 'react';
 
-export const Hello: React.FC = ({ children }) => <div>Hello {children} !</div>;
+import styles from './styles.css';
+
+const Hello: React.FC = ({ children }) => <div className={styles.text}>Hello {children} !</div>;
+
+export default Hello;

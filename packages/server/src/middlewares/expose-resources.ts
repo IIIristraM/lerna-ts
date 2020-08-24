@@ -1,71 +1,84 @@
-import { RequestHandler } from 'express';
+import { RequestHandler, Response } from 'express';
 import { Stats } from 'webpack';
 import fs from 'fs';
 import path from 'path';
 
 import { cacheFn } from '@project/common/utils/cache';
+import { Resources, PackageStats } from '@project/tools/code-splitting/server';
 
 import { STATIC_PATH } from '../consts';
 
-const parseWebpackStats = (stats: Stats) => {
-    const { children = [] } = stats.toJson();
+declare global {
+    namespace Express {
+        interface Request {
+            resources: Resources[];
+        }
+    }
+}
 
-    return children
-        .filter(child => child.name !== 'server')
-        .reduce((resources, { publicPath = '/', assetsByChunkName }) => {
-            const files: string | string[] | Record<string, string | string[]> = (assetsByChunkName || {})['index'];
-
-            if (typeof files === 'string') {
-                resources.push(`${publicPath}${files}`);
-            } else if (Array.isArray(files)) {
-                files.forEach(file => {
-                    resources.push(`${publicPath}${file}`);
-                });
-            } else {
-                Object.values(files).forEach((file: string | string[]) => {
-                    if (typeof file === 'string') {
-                        resources.push(`${publicPath}${file}`);
-                        return;
-                    }
-
-                    file.forEach(f => {
-                        resources.push(`${publicPath}${f}`);
-                    });
-                });
-            }
-
-            return resources.filter(r => {
-                return !r.includes('hot-update');
-            });
-        }, [] as string[]);
-};
-
-const parseManifests = cacheFn(() => {
-    const resources: string[] = [];
-    const manifests: Manifest[] = [];
+const readStats = cacheFn(() => {
+    type StatsContent = Stats.ToJsonOutput & { timestamp: number };
+    const stats: StatsContent[] = [];
     const staticDirs = fs.readdirSync(STATIC_PATH);
 
     for (const dir of staticDirs) {
-        const manifestPath = path.resolve(STATIC_PATH, dir, 'manifest.json');
-        const manifest: Manifest = JSON.parse(fs.readFileSync(manifestPath, 'utf8'));
-        manifests.push(manifest);
+        const statsPath = path.resolve(STATIC_PATH, dir, 'stats.json');
+        const content: StatsContent = JSON.parse(fs.readFileSync(statsPath, 'utf8'));
+        stats.push(content);
     }
 
-    manifests.sort(({ timestamp: t1 }, { timestamp: t2 }) => t1 - t2);
-    manifests.forEach(({ resources: r }) => {
-        resources.push(...r);
-    });
+    stats.sort(({ timestamp: t1 }, { timestamp: t2 }) => t1 - t2);
 
-    console.log('RESOURSES USED:', resources);
-
-    return resources;
+    return stats;
 });
 
-export const exposeResources: RequestHandler = (req, res, next) => {
-    const resources = res.locals.webpackStats ? parseWebpackStats(res.locals.webpackStats) : parseManifests();
+const readStatsDev = (res: Response) => {
+    return (res.locals.webpackStats as Stats)
+        .toJson()
+        .children?.filter(({ name }) => name !== 'server') as PackageStats[];
+};
 
-    res.locals.scripts = resources.filter(r => /\.js$/.test(r));
-    res.locals.styles = resources.filter(r => /\.css$/.test(r));
+export const exposeResources: RequestHandler = (req, res, next) => {
+    const stats: PackageStats[] = process.env.NODE_ENV === 'development' ? readStatsDev(res) : readStats();
+
+    req.resources = [];
+
+    for (const item of stats) {
+        const { publicPath } = item;
+        if (!item.chunks || !publicPath) continue;
+
+        const resource: Resources = {
+            publicPath,
+            scripts: {
+                initial: [],
+                async: [],
+            },
+            styles: {
+                initial: [],
+                async: [],
+            },
+        };
+
+        for (const chunk of item.chunks) {
+            const { files, initial } = chunk;
+
+            for (const file of files) {
+                if (['hot-update'].some(exclude => file.includes(exclude))) {
+                    continue;
+                }
+
+                if (file.includes('.js')) {
+                    (initial ? resource.scripts.initial : resource.scripts.async).push(file);
+                }
+
+                if (file.includes('.css')) {
+                    (initial ? resource.styles.initial : resource.styles.async).push(file);
+                }
+            }
+        }
+
+        req.resources.push(resource);
+    }
 
     next();
 };

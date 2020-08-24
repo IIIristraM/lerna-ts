@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
         "target": "es6",
-        "module": "esnext",
+        "module": "ESNext",
         "moduleResolution": "node",
         "allowJs": false,
         "checkJs": false,
@@ -15,11 +15,19 @@
         "noUnusedLocals": true,
         "pretty": true,
         "skipDefaultLibCheck": true,
-        "disableSourceOfProjectReferenceRedirect": true,
+        "disableSourceOfProjectReferenceRedirect": false,
         "esModuleInterop": true,
         "jsx": "react",
-        "lib": ["ES2015"],
-        "types": ["utils", "css"],
-        "typeRoots": ["../typings/src", "../../node_modules/@types"]
+        "lib": [
+            "ES2015"
+        ],
+        "types": [
+            "utils",
+            "css"
+        ],
+        "typeRoots": [
+            "../typings/src",
+            "../../node_modules/@types"
+        ]
     }
 }

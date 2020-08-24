@@ -1,0 +1,1 @@
+TS_NODE_PROJECT="../webpack/tsconfig.webpack.json" node -r tsconfig-paths/register ../../node_modules/.bin/webpack

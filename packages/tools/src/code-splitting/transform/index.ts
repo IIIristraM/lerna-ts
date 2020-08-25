@@ -2,8 +2,11 @@ import ts, { TransformerFactory } from 'typescript';
 import { hasLoadUsage, isLoadFn, createLoadOptions } from './utils';
 
 const transform: TransformerFactory<ts.SourceFile> = context => {
+    let sourceFile: ts.SourceFile;
+
     const processArgs = (args: ts.NodeArray<ts.Expression>) => {
         let importedModule = '';
+        let chunkName = '';
 
         for (const arg of args) {
             const visitor = (node: ts.Node): ts.Node => {
@@ -16,17 +19,21 @@ const transform: TransformerFactory<ts.SourceFile> = context => {
                 }
 
                 importedModule = (node.arguments[0] as ts.StringLiteral).text;
+                const fullText = node.arguments[0].getFullText(sourceFile);
+                chunkName = fullText.match(/webpackChunkName:\s+"([^"]+)"/)?.[1] || chunkName;
+
                 return node;
             };
 
             ts.visitEachChild(arg, visitor, context);
         }
 
-        return importedModule ? ts.createNodeArray([createLoadOptions(importedModule)]) : args;
+        return importedModule ? ts.createNodeArray([createLoadOptions(importedModule, chunkName)]) : args;
     };
 
     const visitor = (loadFnName?: string) => (node: ts.Node): ts.Node => {
         if (ts.isSourceFile(node)) {
+            sourceFile = node;
             const importName = hasLoadUsage(node);
             if (!importName) return node;
 

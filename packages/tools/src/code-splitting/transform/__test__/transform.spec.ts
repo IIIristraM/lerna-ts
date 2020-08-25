@@ -10,7 +10,8 @@ test('transform', () => {
         `
             import { load } from '@project/tools/code-splitting/load'
             const XXX = load(() => import('@project/common/components/xxx'))
-            const YYY = load(() => import('./yyy'))
+            const YYY = load(() => import('../../yyy'))
+            const ZZZ = load(() => import(/* webpackChunkName: "MyChunkName" */'zzz'))
         `,
         ts.ScriptTarget.Latest,
     );
@@ -20,17 +21,24 @@ test('transform', () => {
         `
             import { load } from '@project/tools/code-splitting/load';
             const XXX = load({
-                chunkName: () => '__project_common_components_xxx',
-                asyncImport: () => import(/* webpackChunkName: "__project_common_components_xxx" */ '@project/common/components/xxx'),
+                chunkName: () => 'project_common_components_xxx',
+                asyncImport: () => import(/* webpackChunkName: "project_common_components_xxx" */ '@project/common/components/xxx'),
                 syncImport: () => {
                     return __webpack_require__(require.resolveWeak('@project/common/components/xxx'));
                 }
             });
             const YYY = load({
-                chunkName: () => '__yyy',
-                asyncImport: () => import(/* webpackChunkName: "__yyy" */ './yyy'),
+                chunkName: () => 'yyy',
+                asyncImport: () => import(/* webpackChunkName: "yyy" */ '../../yyy'),
                 syncImport: () => {
-                    return __webpack_require__(require.resolveWeak('./yyy'));
+                    return __webpack_require__(require.resolveWeak('../../yyy'));
+                }
+            });
+            const ZZZ = load({
+                chunkName: () => 'MyChunkName',
+                asyncImport: () => import(/* webpackChunkName: "MyChunkName" */ 'zzz'),
+                syncImport: () => {
+                    return __webpack_require__(require.resolveWeak('zzz'));
                 }
             });
         `,

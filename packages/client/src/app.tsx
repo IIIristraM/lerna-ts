@@ -9,7 +9,7 @@ import { load } from '@project/tools/code-splitting/load';
 import AboutPage from './pages/AboutPage';
 
 const HomePageAsync = load(() => import('./pages/home-page'));
-const ContactsPageAsync = load(() => import('./pages/ContactsPage'));
+const ContactsPageAsync = load(() => import(/* webpackChunkName: "ContactsPage" */'./pages/ContactsPage'));
 
 const ROUTES = [
     { url: '/', page: HomePageAsync, text: 'Home' },

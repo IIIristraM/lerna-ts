@@ -105,8 +105,8 @@ function createSyncImport(modulePath: string) {
     );
 }
 
-export function createLoadOptions(modulePath: string) {
-    const chunkName = modulePath.replace(/@/g, '__').replace(/[/.]/g, '_');
+export function createLoadOptions(modulePath: string, chunkCustomName: string) {
+    const chunkName = chunkCustomName || modulePath.replace(/@/g, '').split('/').filter(s => !s.match(/^[.]*$/)).join('_');
 
     return ts.createObjectLiteral(
         [createChunkName(chunkName), createAsyncImport(modulePath, chunkName), createSyncImport(modulePath)],

@@ -47,8 +47,8 @@ const createLoadComponent = <T extends ComponentType>(options: LoadableOptions<T
     <Load options={options} {...props} />
 );
 
-export function load<T extends ComponentType>(fn: LoadableOptions<T>['asyncImport']): React.ComponentType;
-export function load<T extends ComponentType>(options: LoadableOptions<T>): React.ComponentType;
+export function load<T extends ComponentType>(fn: LoadableOptions<T>['asyncImport']): T;
+export function load<T extends ComponentType>(options: LoadableOptions<T>): T;
 
 export function load(options: any): React.ComponentType {
     return createLoadComponent(options);

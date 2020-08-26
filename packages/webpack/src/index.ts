@@ -2,10 +2,13 @@ import path from 'path';
 import webpack, { ProjectConfiguration } from 'webpack';
 import glob from 'glob';
 import nodeExternals from 'webpack-node-externals';
-import ManifestPlugin from 'webpack-manifest-plugin';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import TerserJSPlugin from 'terser-webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
+import { StatsWriterPlugin } from 'webpack-stats-plugin';
+import { Program } from 'typescript';
+
+import transform from '@project/tools/code-splitting/transform';
 
 const DIST_FOLDER = 'dist';
 const SOURCE_FOLDER = 'src';
@@ -71,38 +74,44 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
             aggregateTimeout: 500,
         },
         externals: [],
+        optimization: {
+            splitChunks: {
+                chunks: 'all',
+                cacheGroups: {
+                    vendors: false,
+                },
+            },
+        },
     };
 
     if (target === 'web' && MODE === 'production') {
         config.plugins.push(
-            new ManifestPlugin({
-                filter: desc => {
-                    return desc.name
-                        ? /\.(js|css)$/.test(desc.name) &&
-                              // ts-loader emits builded files
-                              !desc.name.includes('/build/')
-                        : false;
-                },
-                generate: (seed, files, entrypoints) => {
-                    const manifest: Manifest = {
-                        timestamp: Date.now(),
-                        resources: files.reduce((manifest, { path }) => {
-                            manifest.push(path);
-                            return manifest;
-                        }, [] as string[]),
-                    };
-
-                    return manifest;
-                },
+            new StatsWriterPlugin({
+                fields: ['assetsByChunkName', 'chunks', 'publicPath'],
+                transform: data =>
+                    JSON.stringify(
+                        {
+                            timestamp: Date.now(),
+                            ...data,
+                        },
+                        null,
+                        2,
+                    ),
             }),
         );
 
         config.optimization = {
+            ...config.optimization,
             minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
         };
     }
 
     if (target === 'node') {
+        config.optimization = {
+            ...config.optimization,
+            minimize: false,
+        };
+
         config.externals.push(
             nodeExternals({
                 modulesDir: '../../node_modules',
@@ -140,6 +149,7 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
     }
 
     config.output.filename = createFileName(config, 'js');
+    config.output.chunkFilename = createFileName(config, 'js');
 
     return config;
 };
@@ -154,6 +164,12 @@ export const processTypescript = (config: ProjectConfiguration) => {
         exclude: '/node_modules/',
         options: {
             projectReferences: true,
+            compilerOptions: {
+                module: 'ESNext',
+            },
+            getCustomTransformers: (program: Program) => ({
+                before: [transform],
+            }),
         },
     });
 
@@ -203,13 +219,13 @@ export const processStyles = (config: ProjectConfiguration) => {
     return config;
 };
 
-export const addAliases = (config: ProjectConfiguration, dllName: string) => {
+export const addAliases = (config: ProjectConfiguration, pkg: string) => {
     config.resolve = config.resolve || {};
     config.resolve.alias = config.resolve.alias || {};
 
     config.resolve.alias = {
         ...config.resolve.alias,
-        [`@project/${dllName}`]: path.resolve(config.context, `../${dllName}/${SOURCE_FOLDER}`),
+        [`@project/${pkg}`]: path.resolve(config.context, `../${pkg}/${SOURCE_FOLDER}`),
     };
 };
 

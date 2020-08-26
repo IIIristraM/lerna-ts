@@ -2,7 +2,7 @@
 
 import path from 'path';
 
-import { init, addDll, processTypescript, processStyles } from '../webpack/src';
+import { init, addDll, processTypescript, processStyles, addAliases } from '../webpack/src';
 import commonConfig from '../common/webpack.config';
 import vendorsConfig from '../vendors/webpack.config';
 
@@ -19,6 +19,7 @@ if (config.mode === 'development') {
 
 processTypescript(config);
 processStyles(config);
+addAliases(config, 'tools');
 addDll(config, vendorsConfig.name);
 addDll(config, commonConfig.name);
 

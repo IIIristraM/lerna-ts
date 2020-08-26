@@ -1,6 +1,10 @@
 import webpack, { Resolve } from 'webpack';
 import Watchpack from 'watchpack';
 
+declare global {
+    function __webpack_require__<T>(id: string): T;
+}
+
 declare module 'webpack' {
     interface NodeWatchFileSystem {
         watcher?: Watchpack;

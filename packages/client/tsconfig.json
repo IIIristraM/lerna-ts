@@ -2,18 +2,40 @@
     "extends": "../tsconfig/tsconfig.json",
     "references": [
         {
-            "path": "../common/tsconfig.json"
+            "path": "../common/tsconfig.json",
+        },
+        {
+            "path": "../tools/tsconfig.json",
         }
     ],
     "compilerOptions": {
         "baseUrl": ".",
         "rootDir": "src",
         "outDir": "build",
-        "lib": ["ES2015", "DOM"],
-        "types": ["utils", "react", "react-router", "react-router-dom", "css", "client"],
+        "lib": [
+            "ES2015",
+            "DOM"
+        ],
+        "types": [
+            "utils",
+            "react",
+            "react-router",
+            "react-router-dom",
+            "css",
+            "client",
+            "node",
+            "webpack"
+        ],
         "paths": {
-            "@project/common/*": ["../common/src/*"]
+            "@project/tools/*": [
+                "../tools/src/*"
+            ],
+            "@project/common/*": [
+                "../common/src/*"
+            ]
         }
     },
-    "include": ["src/**/*"]
+    "include": [
+        "src/**/*"
+    ]
 }

@@ -20,6 +20,7 @@ config.output.libraryTarget = 'commonjs2';
 
 processTypescript(config);
 processStyles(config);
+addAliases(config, 'tools');
 addAliases(config, clientConfig.name);
 addAliases(config, commonConfig.name);
 

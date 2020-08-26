@@ -1,42 +1,65 @@
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
-import { RequestHandler } from 'express';
+import { RequestHandler, Request } from 'express';
 import { StaticRouter } from 'react-router';
 import { Readable } from 'stream';
 import { Provider } from 'react-redux';
 
 import App from '@project/client/app';
 import { createStore } from '@project/common/infrastructure/store';
-import { CommonState } from '@project/common/infrastructure/reducers';
+import { ChunksManager } from '@project/tools/code-splitting/server';
 
 type TemplateProps = {
-    styles: string[];
-    scripts: string[];
-    state: CommonState;
+    req: Request;
 };
 
-const Template: React.FC<TemplateProps> = ({ children, styles, scripts, state }) => (
-    <html lang="en">
-        <head>
-            <title>Project Template</title>
-            <meta name="viewport" content="initial-scale=1"></meta>
-            <meta name="Description" content="Project template."></meta>
-            {styles.map(style => {
-                return <link key={style} rel="stylesheet" type="text/css" href={style}></link>;
-            })}
-        </head>
-        <body>
-            <div id="app">{children}</div>
-            <script
-                id="state"
-                dangerouslySetInnerHTML={{ __html: `window.__STATE_FROM_SERVER__ = ${JSON.stringify(state)}` }}
-            />
-            {scripts.map(script => {
-                return <script key={script} src={script}></script>;
-            })}
-        </body>
-    </html>
-);
+function Template({ req }: TemplateProps) {
+    const { resources } = req;
+    const store = createStore(INITIAL_STATE);
+
+    const chunksManager = new ChunksManager();
+    const Scripts = chunksManager.getScripts();
+    const Styles = chunksManager.getStyles();
+
+    // stream with styles is not possible without static analysis of dependencies
+    const children = ReactDOMServer.renderToString(
+        chunksManager.wrap(
+            <Provider store={store}>
+                <StaticRouter location={req.url}>
+                    <App />
+                </StaticRouter>
+            </Provider>,
+        ),
+    );
+
+    return (
+        <html lang="en">
+            <head>
+                <title>Project Template</title>
+                <meta name="viewport" content="initial-scale=1"></meta>
+                <meta name="Description" content="Project template."></meta>
+                <Styles resources={resources} />
+            </head>
+            <body>
+                <div
+                    id="app"
+                    dangerouslySetInnerHTML={{
+                        __html: children,
+                    }}
+                />
+                <script
+                    id="state"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            window.__STATE_FROM_SERVER__ = ${JSON.stringify(store.getState())};
+                        `,
+                    }}
+                />
+                <Scripts resources={resources} />
+            </body>
+        </html>
+    );
+}
 
 const INITIAL_STATE = {
     user: {
@@ -46,26 +69,13 @@ const INITIAL_STATE = {
 
 export default function render() {
     return function (req, res, next) {
-        const {
-            locals: { scripts, styles },
-        } = res;
-        const store = createStore(INITIAL_STATE);
-
         const prefixStream = Readable.from(['<!DOCTYPE html>']);
 
-        const appStram = ReactDOMServer.renderToNodeStream(
-            <Template scripts={scripts} styles={styles} state={store.getState()}>
-                <Provider store={store}>
-                    <StaticRouter location={req.url}>
-                        <App />
-                    </StaticRouter>
-                </Provider>
-            </Template>,
-        );
+        const appStream = ReactDOMServer.renderToNodeStream(<Template req={req} />);
 
         prefixStream.pipe(res, { end: false });
         prefixStream.on('end', function () {
-            appStram.pipe(res);
+            appStream.pipe(res);
         });
     } as RequestHandler;
 }

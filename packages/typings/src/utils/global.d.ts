@@ -1,6 +1,5 @@
 type Double = number;
 
-type Manifest = {
-    timestamp: number;
-    resources: string[];
-};
+type GetProps<T> = T extends React.ComponentType<infer P> ? P
+    : T extends React.PureComponent<infer P> ? P
+    : never;

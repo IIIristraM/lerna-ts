@@ -1,34 +1,37 @@
 import ts, { TransformerFactory } from 'typescript';
-import { hasLoadUsage, isLoadFn, createLoadOptions } from './utils';
+import { hasLoadUsage, isLoadFn, createLoadOptions, isFnImport, isObjectImport, isImportProp } from './utils';
 
 const transform: TransformerFactory<ts.SourceFile> = context => {
     let sourceFile: ts.SourceFile;
 
-    const processArgs = (args: ts.NodeArray<ts.Expression>) => {
+    const processArgs = (arg: ts.Expression) => {
         let importedModule = '';
         let chunkName = '';
 
-        for (const arg of args) {
-            const visitor = (node: ts.Node): ts.Node => {
-                if (
-                    !ts.isCallExpression(node) ||
-                    node.expression.kind !== ts.SyntaxKind.ImportKeyword ||
-                    !ts.isStringLiteral(node.arguments[0])
-                ) {
-                    return ts.visitEachChild(node, visitor, context);
-                }
-
-                importedModule = (node.arguments[0] as ts.StringLiteral).text;
-                const fullText = node.arguments[0].getFullText(sourceFile);
+        const visitor = (node: ts.Node): ts.Node => {
+            const call = isFnImport(node) || isObjectImport(node);
+            if (call) {
+                importedModule = (call.arguments[0] as ts.StringLiteral).text;
+                const fullText = call.arguments[0].getFullText(sourceFile);
                 chunkName = fullText.match(/webpackChunkName:\s+"([^"]+)"/)?.[1] || chunkName;
 
                 return node;
-            };
+            }
 
-            ts.visitEachChild(arg, visitor, context);
-        }
+            return ts.visitEachChild(node, visitor, context);
+        };
 
-        return importedModule ? ts.createNodeArray([createLoadOptions(importedModule, chunkName)]) : args;
+        ts.visitEachChild(arg, visitor, context);
+
+        return importedModule
+            ? ts.createNodeArray([
+                  createLoadOptions(
+                      importedModule,
+                      chunkName,
+                      ts.isObjectLiteralExpression(arg) ? arg.properties.filter(p => !isImportProp(p)) : [],
+                  ),
+              ])
+            : [arg];
     };
 
     const visitor = (loadFnName?: string) => (node: ts.Node): ts.Node => {
@@ -49,11 +52,15 @@ const transform: TransformerFactory<ts.SourceFile> = context => {
             return ts.visitEachChild(node, visitor(loadFnName), context);
         }
 
-        if (!ts.isArrowFunction(args[0]) && !ts.isFunctionExpression(args[0])) {
+        if (
+            !ts.isArrowFunction(args[0]) &&
+            !ts.isFunctionExpression(args[0]) &&
+            !ts.isObjectLiteralExpression(args[0])
+        ) {
             return node;
         }
 
-        return ts.createCall(ts.createIdentifier(loadFnName), undefined, processArgs(args));
+        return ts.createCall(ts.createIdentifier(loadFnName), undefined, processArgs(args[0]));
     };
 
     return node => {

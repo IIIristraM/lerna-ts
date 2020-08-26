@@ -3,11 +3,15 @@ import { useSelector } from 'react-redux';
 
 import { square } from '@project/common/utils';
 import { CommonState } from '@project/common/infrastructure/reducers';
+import { Loader } from '@project/common/components/loader';
 import { load } from '@project/tools/code-splitting/load';
 
 import styles from './styles.css';
 
-const HelloAsync = load(() => import('@project/common/components/hello'));
+const HelloAsync = load({
+    import: () => import('@project/common/components/hello'),
+    Renderer: ({ Component: Hello, children }) => (Hello ? <Hello>{children}</Hello> : <Loader />),
+});
 
 const HomePage: React.FC<{}> = () => {
     const login = useSelector((state: CommonState) => state.user)?.login;

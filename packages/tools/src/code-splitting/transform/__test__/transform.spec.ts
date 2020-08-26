@@ -12,6 +12,10 @@ test('transform', () => {
             const XXX = load(() => import('@project/common/components/xxx'))
             const YYY = load(() => import('../../yyy'))
             const ZZZ = load(() => import(/* webpackChunkName: "MyChunkName" */'zzz'))
+            const AAA = load({
+                import: () => import(/* webpackChunkName: "MyChunkName" */'aaa'),
+                Loader: LoaderComponent
+            })
         `,
         ts.ScriptTarget.Latest,
     );
@@ -40,6 +44,14 @@ test('transform', () => {
                 syncImport: () => {
                     return __webpack_require__(require.resolveWeak('zzz'));
                 }
+            });
+            const AAA = load({
+                chunkName: () => 'MyChunkName',
+                asyncImport: () => import(/* webpackChunkName: "MyChunkName" */ 'aaa'),
+                syncImport: () => {
+                    return __webpack_require__(require.resolveWeak('aaa'));
+                },
+                Loader: LoaderComponent
             });
         `,
         ts.ScriptTarget.Latest,

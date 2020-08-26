@@ -4,7 +4,14 @@
         "baseUrl": ".",
         "rootDir": "./src",
         "outDir": "./build",
-        "lib": ["DOM"]
+        "lib": [
+            "DOM"
+        ],
+        "types": [
+            "react"
+        ]
     },
-    "include": ["./src/**/*"]
+    "include": [
+        "./src/**/*"
+    ]
 }

@@ -105,11 +105,56 @@ function createSyncImport(modulePath: string) {
     );
 }
 
-export function createLoadOptions(modulePath: string, chunkCustomName: string) {
-    const chunkName = chunkCustomName || modulePath.replace(/@/g, '').split('/').filter(s => !s.match(/^[.]*$/)).join('_');
+export function isFnImport(node: ts.Node) {
+    if (
+        ts.isCallExpression(node) &&
+        node.expression.kind === ts.SyntaxKind.ImportKeyword &&
+        ts.isStringLiteral(node.arguments[0])
+    ) {
+        return node;
+    }
+
+    return null;
+}
+
+export function isImportProp(node: ts.ObjectLiteralElementLike) {
+    return node.name && (ts.isStringLiteral(node.name) || ts.isIdentifier(node.name)) && node.name.text === 'import';
+}
+
+export function isObjectImport(node: ts.Node) {
+    if (!ts.isObjectLiteralExpression(node)) {
+        return null;
+    }
+
+    const importProperty = node.properties.find(isImportProp);
+
+    if (!importProperty || !ts.isPropertyAssignment(importProperty)) {
+        return null;
+    }
+
+    return isFnImport(importProperty.initializer);
+}
+
+export function createLoadOptions(
+    modulePath: string,
+    chunkCustomName: string,
+    publicProps: Array<ts.ObjectLiteralElementLike> = [],
+) {
+    const chunkName =
+        chunkCustomName ||
+        modulePath
+            .replace(/@/g, '')
+            .split('/')
+            .filter(s => !s.match(/^[.]*$/))
+            .join('_');
 
     return ts.createObjectLiteral(
-        [createChunkName(chunkName), createAsyncImport(modulePath, chunkName), createSyncImport(modulePath)],
+        [
+            createChunkName(chunkName),
+            createAsyncImport(modulePath, chunkName),
+            createSyncImport(modulePath),
+            ...publicProps,
+        ],
         true,
     );
 }

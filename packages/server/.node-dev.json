@@ -1,3 +1,7 @@
 {
-    "ignore": ["../client", "../common"]
+    "ignore": [
+        "../client",
+        "../common",
+        "./dist"
+    ]
 }

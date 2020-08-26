@@ -5,11 +5,15 @@ import { hot } from 'react-hot-loader/root';
 import { Header, Content, Body } from '@project/common/components/layout';
 import Link from '@project/common/components/link';
 import { load } from '@project/tools/code-splitting/load';
+import { Loader } from '@project/common/components/loader';
 
 import AboutPage from './pages/AboutPage';
 
 const HomePageAsync = load(() => import('./pages/home-page'));
-const ContactsPageAsync = load(() => import(/* webpackChunkName: "ContactsPage" */'./pages/ContactsPage'));
+const ContactsPageAsync = load({
+    import: () => import(/* webpackChunkName: "ContactsPage" */ './pages/ContactsPage'),
+    Loader,
+});
 
 const ROUTES = [
     { url: '/', page: HomePageAsync, text: 'Home' },

@@ -1,5 +1,6 @@
 import React from 'react';
 import { Stats } from 'webpack';
+import serialize from 'serialize-javascript';
 
 import { ChunksContext } from '../common/contexts';
 
@@ -61,7 +62,7 @@ export class ChunksManager {
                     <script
                         dangerouslySetInnerHTML={{
                             __html: `
-                                window.__CHUNKS_TO_LOAD__ = ${JSON.stringify(chunksToLoad)};
+                                window.__CHUNKS_TO_LOAD__ = ${serialize(chunksToLoad)};
                             `,
                         }}
                     />

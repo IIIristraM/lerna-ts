@@ -4,6 +4,7 @@ import { RequestHandler, Request } from 'express';
 import { StaticRouter } from 'react-router';
 import { Readable } from 'stream';
 import { Provider } from 'react-redux';
+import serialize from 'serialize-javascript';
 
 import App from '@project/client/app';
 import { createStore } from '@project/common/infrastructure/store';
@@ -51,7 +52,7 @@ function Template({ req }: TemplateProps) {
                     id="state"
                     dangerouslySetInnerHTML={{
                         __html: `
-                            window.__STATE_FROM_SERVER__ = ${JSON.stringify(store.getState())};
+                            window.__STATE_FROM_SERVER__ = ${serialize(store.getState())};
                         `,
                     }}
                 />

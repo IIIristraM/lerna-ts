@@ -96,3 +96,46 @@ export class ChunksManager {
         };
     }
 }
+
+export function processStats(stats: PackageStats[]) {
+    const resources: Resources[] = [];
+
+    for (const item of stats) {
+        const { publicPath } = item;
+        if (!item.chunks || !publicPath) continue;
+
+        const resource: Resources = {
+            publicPath,
+            scripts: {
+                initial: [],
+                async: [],
+            },
+            styles: {
+                initial: [],
+                async: [],
+            },
+        };
+
+        for (const chunk of item.chunks) {
+            const { files, initial } = chunk;
+
+            for (const file of files) {
+                if (['hot-update'].some(exclude => file.includes(exclude))) {
+                    continue;
+                }
+
+                if (file.includes('.js')) {
+                    (initial ? resource.scripts.initial : resource.scripts.async).push(file);
+                }
+
+                if (file.includes('.css')) {
+                    (initial ? resource.styles.initial : resource.styles.async).push(file);
+                }
+            }
+        }
+
+        resources.push(resource);
+    }
+
+    return resources;
+}

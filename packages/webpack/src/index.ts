@@ -5,10 +5,9 @@ import nodeExternals from 'webpack-node-externals';
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import TerserJSPlugin from 'terser-webpack-plugin';
 import OptimizeCSSAssetsPlugin from 'optimize-css-assets-webpack-plugin';
-import { StatsWriterPlugin } from 'webpack-stats-plugin';
 import { Program } from 'typescript';
 
-import transform from '@project/tools/code-splitting/transform';
+import { transform, StatsPlugin } from '@project/tools/code-splitting/webpack';
 
 const DIST_FOLDER = 'dist';
 const SOURCE_FOLDER = 'src';
@@ -85,20 +84,7 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
     };
 
     if (target === 'web' && MODE === 'production') {
-        config.plugins.push(
-            new StatsWriterPlugin({
-                fields: ['assetsByChunkName', 'chunks', 'publicPath'],
-                transform: data =>
-                    JSON.stringify(
-                        {
-                            timestamp: Date.now(),
-                            ...data,
-                        },
-                        null,
-                        2,
-                    ),
-            }),
-        );
+        config.plugins.push(new StatsPlugin());
 
         config.optimization = {
             ...config.optimization,

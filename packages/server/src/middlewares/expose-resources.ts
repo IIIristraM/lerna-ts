@@ -4,7 +4,7 @@ import fs from 'fs';
 import path from 'path';
 
 import { cacheFn } from '@project/common/utils/cache';
-import { Resources, PackageStats } from '@project/tools/code-splitting/server';
+import { Resources, processStats } from '@project/tools/code-splitting/server';
 
 import { STATIC_PATH } from '../consts';
 
@@ -33,52 +33,16 @@ const readStats = cacheFn(() => {
 });
 
 const readStatsDev = (res: Response) => {
-    return (res.locals.webpackStats as Stats)
-        .toJson()
-        .children?.filter(({ name }) => name !== 'server') as PackageStats[];
+    const { children } = (res.locals.webpackStats as Stats).toJson();
+
+    if (!children) {
+        throw new Error('Multi-compiler compilation expected');
+    }
+    return children.filter(({ name }) => name !== 'server');
 };
 
 export const exposeResources: RequestHandler = (req, res, next) => {
-    const stats: PackageStats[] = process.env.NODE_ENV === 'development' ? readStatsDev(res) : readStats();
-
-    req.resources = [];
-
-    for (const item of stats) {
-        const { publicPath } = item;
-        if (!item.chunks || !publicPath) continue;
-
-        const resource: Resources = {
-            publicPath,
-            scripts: {
-                initial: [],
-                async: [],
-            },
-            styles: {
-                initial: [],
-                async: [],
-            },
-        };
-
-        for (const chunk of item.chunks) {
-            const { files, initial } = chunk;
-
-            for (const file of files) {
-                if (['hot-update'].some(exclude => file.includes(exclude))) {
-                    continue;
-                }
-
-                if (file.includes('.js')) {
-                    (initial ? resource.scripts.initial : resource.scripts.async).push(file);
-                }
-
-                if (file.includes('.css')) {
-                    (initial ? resource.styles.initial : resource.styles.async).push(file);
-                }
-            }
-        }
-
-        req.resources.push(resource);
-    }
-
+    const stats = process.env.NODE_ENV === 'development' ? readStatsDev(res) : readStats();
+    req.resources = processStats(stats);
     next();
 };

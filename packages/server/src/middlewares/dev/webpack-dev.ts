@@ -9,12 +9,17 @@ export default function webpackDevMiddleware(compiler: MultiCompiler, configs: P
     const webpackDevMiddlewareInstance = WebpackDevMiddleware(compiler, {
         publicPath: PUBLIC_PATH,
         lazy: false,
-        stats: 'errors-warnings',
+        stats: {
+            all: false,
+            assets: true,
+            errors: true,
+            warnings: true,
+        },
         watchOptions: {
             aggregateTimeout: 500,
             ignored: createWatchIgnore(),
         },
-        logLevel: 'warn',
+        logLevel: 'info',
         writeToDisk: true, // required for IDE handle TS errors
         serverSideRender: true,
     });

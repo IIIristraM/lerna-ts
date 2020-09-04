@@ -1,6 +1,6 @@
 import ts from 'typescript';
 
-import transform from '../index';
+import { transform } from '../index';
 
 const printer = ts.createPrinter();
 

@@ -12,3 +12,4 @@ jobs:
             - run: scripts/prepare-pr-msg.sh
               env:
                   PR_TITLE: ${{ github.event.pull_request.title }}
+                  NPM_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

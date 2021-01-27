@@ -1,5 +1,13 @@
 .content {
-    width: 100%;
-    min-height: 100vh;
-    padding: 20px;
+    width: 100vw;
+    height: calc(100vh - 60px);
+    max-height: calc(100vh - 60px);
+    overflow: hidden;
+    flex-shrink: 0;
+}
+
+.inner {
+    padding: 1rem;
+    height: inherit;
+    overflow-y: scroll;
 }

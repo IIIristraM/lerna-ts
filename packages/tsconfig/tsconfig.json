@@ -8,9 +8,11 @@
         "allowSyntheticDefaultImports": true,
         "strictBindCallApply": true,
         "experimentalDecorators": true,
+        "emitDecoratorMetadata": true,
         "importHelpers": true,
         "noEmitHelpers": true,
         "strictNullChecks": true,
+        "strictFunctionTypes": false,
         "noImplicitAny": true,
         "noUnusedLocals": true,
         "pretty": true,
@@ -20,10 +22,6 @@
         "jsx": "react",
         "lib": [
             "ES2015"
-        ],
-        "types": [
-            "utils",
-            "css"
         ],
         "typeRoots": [
             "../typings/src",

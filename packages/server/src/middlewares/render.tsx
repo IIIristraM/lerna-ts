@@ -5,33 +5,58 @@ import { StaticRouter } from 'react-router';
 import { Readable } from 'stream';
 import { Provider } from 'react-redux';
 import serialize from 'serialize-javascript';
+import { Store } from 'redux';
+import { call } from 'typed-redux-saga';
 
-import App from '@project/client/app';
-import { createStore } from '@project/common/infrastructure/store';
+import App from '@project/client/components/app';
+import { CommonState, createStore } from '@project/common/infrastructure/store';
 import { ChunksManager } from '@project/tools/code-splitting/server';
+import {
+    useOperation,
+    SsrContext,
+    getDefaultContext,
+    ComponentLifecycleService,
+    OperationService,
+    Root,
+    SagaClientHash
+} from '@iiiristram/sagun';
+import { renderToStringAsync } from '@iiiristram/sagun/server';
 
 type TemplateProps = {
     req: Request;
+    chunksManager: ChunksManager;
+    children: string;
+    hash: SagaClientHash;
+    store: Store<CommonState>;
 };
 
-function Template({ req }: TemplateProps) {
-    const { resources } = req;
-    const store = createStore(INITIAL_STATE);
+useOperation.setPath((state: CommonState) => state.asyncOperations);
 
-    const chunksManager = new ChunksManager();
-    const Scripts = chunksManager.getScripts();
-    const Styles = chunksManager.getStyles();
-
-    // stream with styles is not possible without static analysis of dependencies
-    const children = ReactDOMServer.renderToString(
-        chunksManager.wrap(
+const SsrApp = ({
+    store,
+    url,
+    service,
+    operationService,
+}: { url: string; service: ComponentLifecycleService; operationService: OperationService } & Pick<
+    TemplateProps,
+    'store'
+>) => (
+    <Root operationService={operationService} componentLifecycleService={service}>
+        <SsrContext.Provider value={getDefaultContext()}>
             <Provider store={store}>
-                <StaticRouter location={req.url}>
+                <StaticRouter location={url}>
                     <App />
                 </StaticRouter>
-            </Provider>,
-        ),
-    );
+            </Provider>
+        </SsrContext.Provider>
+    </Root>
+);
+
+function Template({ req, chunksManager, children, store, hash }: TemplateProps) {
+    const { resources } = req;
+
+    const Scripts = chunksManager.getScripts();
+    const Styles = chunksManager.getStyles();
 
     return (
         <html lang="en">
@@ -39,20 +64,25 @@ function Template({ req }: TemplateProps) {
                 <title>Project Template</title>
                 <meta name="viewport" content="initial-scale=1"></meta>
                 <meta name="Description" content="Project template."></meta>
+                <link rel="preconnect" href="https://fonts.gstatic.com" />
+                <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
                 <Styles resources={resources} />
             </head>
             <body>
-                <div
-                    id="app"
-                    dangerouslySetInnerHTML={{
-                        __html: children,
-                    }}
-                />
+                <div id="app" dangerouslySetInnerHTML={{ __html: children }} />
                 <script
                     id="state"
                     dangerouslySetInnerHTML={{
                         __html: `
                             window.__STATE_FROM_SERVER__ = ${serialize(store.getState())};
+                        `,
+                    }}
+                />
+                <script
+                    id="hash"
+                    dangerouslySetInnerHTML={{
+                        __html: `
+                            window.__SSR_CONTEXT__ = ${serialize(hash)};
                         `,
                     }}
                 />
@@ -62,17 +92,39 @@ function Template({ req }: TemplateProps) {
     );
 }
 
-const INITIAL_STATE = {
-    user: {
-        login: 'noname',
-    },
+const INITIAL_STATE: CommonState = {
+    asyncOperations: {},
 };
 
 export default function render() {
-    return function (req, res, next) {
+    return async function (req, res, next) {
         const prefixStream = Readable.from(['<!DOCTYPE html>']);
 
-        const appStream = ReactDOMServer.renderToNodeStream(<Template req={req} />);
+        const operationService = new OperationService({ hash: {} });
+        const service = new ComponentLifecycleService(operationService);
+        const chunksManager = new ChunksManager();
+        const { store, sagaMiddleware } = createStore(INITIAL_STATE);
+        const task = sagaMiddleware.run(function* () {
+            yield* call(operationService.run);
+            yield* call(service.run);
+        });
+
+        // chunks have to be extracted after sagas executed
+        // due to cases when new dynamic component rendered after store fulfilled
+        const html = await renderToStringAsync(
+            chunksManager.wrap(
+                <SsrApp store={store} url={req.url} service={service} operationService={operationService} />,
+            ),
+        );
+
+        task.cancel();
+        await task.toPromise();
+
+        const appStream = ReactDOMServer.renderToNodeStream(
+            <Template store={store} hash={operationService.getHash()} req={req} chunksManager={chunksManager}>
+                {html}
+            </Template>,
+        );
 
         prefixStream.pipe(res, { end: false });
         prefixStream.on('end', function () {

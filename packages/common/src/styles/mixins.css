@@ -1,0 +1,16 @@
+.primary {
+    background-color: hsl(210, 100%, 56%);
+    color: white;
+    transition: background-color 0.2s ease-out;
+}
+
+.primary:hover {
+    background-color: hsl(210, 100%, 50%);
+}
+
+.centered {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}

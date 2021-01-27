@@ -1,0 +1,15 @@
+.button {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+    padding: 0.7rem 1.5rem;
+    min-width: 100px;
+    border-radius: 5px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+    grid-gap: 1rem;
+    grid-auto-rows: 350px;
+}

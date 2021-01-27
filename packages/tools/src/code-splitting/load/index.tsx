@@ -11,11 +11,11 @@ type LoadablePrivateOptions<T extends ComponentType> = {
 
 type LoadablePublicOptions<T extends ComponentType> = {
     import: LoadablePrivateOptions<T>['asyncImport'];
-    Loader?: React.ComponentType;
+    Loader?: React.ComponentType<any>;
     Renderer?: React.ComponentType<{ Component: T | null } & GetProps<T>>;
 };
 
-type LoadableOptions<T extends ComponentType> = LoadablePrivateOptions<T> & LoadablePublicOptions<T>;
+type LoadableOptions<T extends ComponentType> = LoadablePrivateOptions<T> & Omit<LoadablePublicOptions<T>, 'import'>;
 
 type LoadComponentProps<T extends ComponentType> = {
     options: LoadableOptions<T>;
@@ -64,7 +64,7 @@ function Load<T extends ComponentType>({ options, ...rest }: LoadComponentProps<
     ) : null;
 }
 
-const createLoadComponent = <T extends ComponentType>(options: LoadableOptions<T>) => (
+export const createLoadComponent = <T extends ComponentType>(options: LoadableOptions<T>) => (
     props: Omit<LoadComponentProps<T>, 'options'> & GetProps<T>,
 ) => <Load options={options} {...props} />;
 

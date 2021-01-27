@@ -26,7 +26,7 @@ type InitOptions = {
     target?: Target;
 };
 
-const createFileName = (config: ProjectConfiguration, ext: string) => {
+const createFileName = (config: ProjectConfiguration, ext: string, isChunk: boolean = false) => {
     const {
         target,
         output: { library },
@@ -35,7 +35,13 @@ const createFileName = (config: ProjectConfiguration, ext: string) => {
 
     const parts = ['[name]'];
     if (!!library) parts.push('dll');
-    if (target === 'web' && mode === 'production') parts.push('[hash]');
+    if (
+        // alway hash chunk for server hmr
+        // https://github.com/60frames/webpack-hot-server-middleware/issues/35#issuecomment-474751780
+        isChunk ||
+        (target === 'web' && mode === 'production')
+    )
+        parts.push('[hash]');
 
     return [...parts, ext].join('.');
 };
@@ -59,8 +65,8 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
             alias:
                 MODE === 'development'
                     ? {
-                          'react-dom': '@hot-loader/react-dom',
-                      }
+                        'react-dom': '@hot-loader/react-dom',
+                    }
                     : {},
             extensions: ['.ts', '.tsx', '.js', '.json'],
         },
@@ -83,6 +89,10 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
         },
     };
 
+    if (target === 'web') {
+        config.entry.index.unshift('reflect-metadata')
+    }
+
     if (target === 'web' && MODE === 'production') {
         config.plugins.push(new StatsPlugin());
 
@@ -103,6 +113,12 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
                 modulesDir: '../../node_modules',
             }),
         );
+
+        // allow __dirname and __filename keep common node behavior
+        config.node = {
+            __dirname: false,
+            __filename: false,
+        };
     }
 
     if (dll) {
@@ -135,7 +151,7 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
     }
 
     config.output.filename = createFileName(config, 'js');
-    config.output.chunkFilename = createFileName(config, 'js');
+    config.output.chunkFilename = createFileName(config, 'js', true);
 
     return config;
 };
@@ -145,7 +161,7 @@ export const processTypescript = (config: ProjectConfiguration) => {
     config.module.rules = config.module.rules || [];
 
     config.module.rules.push({
-        test: /[.]tsx?/,
+        test: /[.]tsx?$/,
         loader: 'ts-loader',
         exclude: '/node_modules/',
         options: {

@@ -1,8 +1,8 @@
-import React, { memo } from 'react'
+import React, { memo, Suspense } from 'react'
 import { useSelector } from 'react-redux'
 
 import { formatPrice } from '@project/common/utils';
-import { Suspense, useOperation, useServiceConsumer } from '@iiiristram/sagun';
+import { useOperation, useServiceConsumer } from '@iiiristram/sagun';
 import { LayoutService } from '@project/common/sagas/services/LayoutService';
 import { Loader } from '@project/common/components/loader';
 

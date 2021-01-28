@@ -13,8 +13,6 @@ import { CommonState, createStore } from '@project/common/infrastructure/store';
 import { ChunksManager } from '@project/tools/code-splitting/server';
 import {
     useOperation,
-    SsrContext,
-    getDefaultContext,
     ComponentLifecycleService,
     OperationService,
     Root,
@@ -42,13 +40,11 @@ const SsrApp = ({
     'store'
 >) => (
     <Root operationService={operationService} componentLifecycleService={service}>
-        <SsrContext.Provider value={getDefaultContext()}>
-            <Provider store={store}>
-                <StaticRouter location={url}>
-                    <App />
-                </StaticRouter>
-            </Provider>
-        </SsrContext.Provider>
+        <Provider store={store}>
+            <StaticRouter location={url}>
+                <App />
+            </StaticRouter>
+        </Provider>
     </Root>
 );
 

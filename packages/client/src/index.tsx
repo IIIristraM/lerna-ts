@@ -8,8 +8,6 @@ import { createStore, CommonState } from '@project/common/infrastructure/store';
 import {
     useOperation,
     ComponentLifecycleService,
-    SsrContext,
-    getDefaultContext,
     OperationService,
     Root,
 } from '@iiiristram/sagun';
@@ -42,13 +40,11 @@ useOperation.setPath((state: CommonState) => state.asyncOperations);
 
 ReactDOM.hydrate(
     <Root operationService={operationService} componentLifecycleService={service}>
-        <SsrContext.Provider value={getDefaultContext()}>
-            <Provider store={store}>
-                <BrowserRouter>
-                    <App />
-                </BrowserRouter>
-            </Provider>
-        </SsrContext.Provider>
+        <Provider store={store}>
+            <BrowserRouter>
+                <App />
+            </BrowserRouter>
+        </Provider>
     </Root>,
     appEl,
 );

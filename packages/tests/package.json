@@ -6,6 +6,6 @@
     "license": "ISC",
     "private": true,
     "scripts": {
-        "test": "jest --runInBand --detectOpenHandles"
+        "test": "jest --runInBand --detectOpenHandles --passWithNoTests"
     }
 }

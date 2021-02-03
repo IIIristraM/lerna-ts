@@ -7,17 +7,12 @@ import { Provider } from 'react-redux';
 import serialize from 'serialize-javascript';
 import { Store } from 'redux';
 import { call } from 'typed-redux-saga';
+import { Map } from 'immutable';
 
 import App from '@project/client/components/app';
 import { CommonState, createStore } from '@project/common/infrastructure/store';
 import { ChunksManager } from '@project/tools/code-splitting/server';
-import {
-    useOperation,
-    ComponentLifecycleService,
-    OperationService,
-    Root,
-    SagaClientHash
-} from '@iiiristram/sagun';
+import { useOperation, ComponentLifecycleService, OperationService, Root, SagaClientHash } from '@iiiristram/sagun';
 import { renderToStringAsync } from '@iiiristram/sagun/server';
 
 type TemplateProps = {
@@ -61,7 +56,10 @@ function Template({ req, chunksManager, children, store, hash }: TemplateProps) 
                 <meta name="viewport" content="initial-scale=1"></meta>
                 <meta name="Description" content="Project template."></meta>
                 <link rel="preconnect" href="https://fonts.gstatic.com" />
-                <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet" />
+                <link
+                    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+                    rel="stylesheet"
+                />
                 <Styles resources={resources} />
             </head>
             <body>
@@ -88,10 +86,6 @@ function Template({ req, chunksManager, children, store, hash }: TemplateProps) 
     );
 }
 
-const INITIAL_STATE: CommonState = {
-    asyncOperations: {},
-};
-
 export default function render() {
     return async function (req, res, next) {
         const prefixStream = Readable.from(['<!DOCTYPE html>']);
@@ -99,7 +93,9 @@ export default function render() {
         const operationService = new OperationService({ hash: {} });
         const service = new ComponentLifecycleService(operationService);
         const chunksManager = new ChunksManager();
-        const { store, sagaMiddleware } = createStore(INITIAL_STATE);
+        const { store, sagaMiddleware } = createStore({
+            asyncOperations: Map(),
+        });
         const task = sagaMiddleware.run(function* () {
             yield* call(operationService.run);
             yield* call(service.run);

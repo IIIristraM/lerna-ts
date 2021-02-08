@@ -19,7 +19,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@iiiristram/sagun": "0.0.8",
+        "@iiiristram/sagun": "0.0.9",
         "compression": "^1.7.4",
         "express": "^4.17.1",
         "react": "^17.0.1",
@@ -33,7 +33,6 @@
         "serialize-javascript": "^4.0.0",
         "tslib": "^2.0.0",
         "typed-redux-saga": "^1.2.0",
-        "uuid": "^7.0.0",
         "immutable": "^4.0.0-rc.12"
     },
     "devDependencies": {
@@ -57,7 +56,6 @@
         "@types/react-router-dom": "^5.1.3",
         "@types/serialize-javascript": "^4.0.0",
         "@types/terser-webpack-plugin": "^2.2.0",
-        "@types/uuid": "^7.0.0",
         "@types/watchpack": "^1.1.5",
         "@types/webpack": "^4.41.0",
         "@types/webpack-dev-middleware": "^2.0.3",

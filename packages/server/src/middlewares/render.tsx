@@ -19,7 +19,7 @@ type TemplateProps = {
     req: Request;
     chunksManager: ChunksManager;
     children: string;
-    hash: SagaClientHash;
+    hash?: SagaClientHash;
     store: Store<CommonState>;
 };
 

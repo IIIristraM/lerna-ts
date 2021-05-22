@@ -31,10 +31,4 @@ config.externals.push(function (context, request, callback) {
     (callback as Function)();
 });
 
-// allow __dirname and __filename keep common node behavior
-config.node = {
-    __dirname: false,
-    __filename: false,
-};
-
 export default config;

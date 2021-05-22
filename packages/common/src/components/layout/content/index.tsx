@@ -1,9 +1,15 @@
 import React from 'react';
 
-import { content } from './styles.css';
+import { content, inner } from './styles.css';
 
 const Content: React.FC<{}> = ({ children }) => {
-    return <div className={content}>{children}</div>;
+    return (
+        <div className={content}>
+            <div className={inner}>
+                {children}
+            </div>
+        </div>
+    );
 };
 
 export default Content;

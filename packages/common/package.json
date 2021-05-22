@@ -15,6 +15,7 @@
         "copy": "cp -r dist ../../dist/static/common"
     },
     "dependencies": {
-        "@project/vendors": "file:../vendors"
+        "@project/vendors": "file:../vendors",
+        "@project/tools": "file:../tools"
     }
 }

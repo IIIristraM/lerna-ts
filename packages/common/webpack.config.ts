@@ -2,7 +2,7 @@
 
 import path from 'path';
 
-import { init, addDll, processTypescript, processStyles } from '../webpack/src';
+import { init, addDll, processTypescript, processStyles, addAliases } from '../webpack/src';
 import vendorsConfig from '../vendors/webpack.config';
 
 const NAME = 'common';
@@ -16,5 +16,6 @@ const config = init({
 processTypescript(config);
 processStyles(config);
 addDll(config, vendorsConfig.name);
+addAliases(config, 'tools');
 
 export default config;

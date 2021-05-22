@@ -1,0 +1,14 @@
+.hide {
+    overflow-x: hidden;
+}
+
+.switcher {
+    display: flex;
+    flex-direction: row;
+    transform: translateX(0);
+    transition: transform 0.25s ease-out;
+}
+
+.switcher.right {
+    transform: translateX(-350px);
+}

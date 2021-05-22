@@ -19,7 +19,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@iiiristram/sagun": "0.0.9",
+        "@iiiristram/sagun": "0.0.16",
         "compression": "^1.7.4",
         "express": "^4.17.1",
         "react": "^17.0.1",
@@ -29,7 +29,6 @@
         "react-router-dom": "^5.1.2",
         "redux": "^4.0.5",
         "redux-saga": "^1.1.3",
-        "reflect-metadata": "^0.1.13",
         "serialize-javascript": "^4.0.0",
         "tslib": "^2.0.0",
         "typed-redux-saga": "^1.2.0",

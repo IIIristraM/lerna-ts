@@ -19,8 +19,5 @@ module.exports = (context, isolatedModules = true) => {
         },
         moduleNameMapper,
         testPathIgnorePatterns: ['(.*)/dist', '(.*)/build'],
-        setupFiles: [
-            'reflect-metadata'
-        ]
     };
 };

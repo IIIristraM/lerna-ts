@@ -21,10 +21,6 @@
         "lib": [
             "ES2015"
         ],
-        "types": [
-            "utils",
-            "css"
-        ],
         "typeRoots": [
             "../typings/src",
             "../../node_modules/@types"

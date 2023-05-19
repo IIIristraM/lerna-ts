@@ -1,5 +1,5 @@
 import { RequestHandler, Response } from 'express';
-import { Stats } from 'webpack';
+import { Stats, MultiStats } from 'webpack';
 import fs from 'fs';
 import path from 'path';
 
@@ -17,7 +17,7 @@ declare global {
 }
 
 const readStats = cacheFn(() => {
-    type StatsContent = Stats.ToJsonOutput & { timestamp: number };
+    type StatsContent = ReturnType<Stats['toJson']> & { timestamp: number };
     const stats: StatsContent[] = [];
     const staticDirs = fs.readdirSync(STATIC_PATH);
 
@@ -33,7 +33,7 @@ const readStats = cacheFn(() => {
 });
 
 const readStatsDev = (res: Response) => {
-    const { children } = (res.locals.webpackStats as Stats).toJson();
+    const { children } = (res.locals.webpack.devMiddleware.stats as MultiStats).toJson();
 
     if (!children) {
         throw new Error('Multi-compiler compilation expected');

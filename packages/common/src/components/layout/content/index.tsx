@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { content } from './styles.css';
+import styles from './styles.css';
 
 const Content: React.FC<{}> = ({ children }) => {
-    return <div className={content}>{children}</div>;
+    return <div className={styles.content}>{children}</div>;
 };
 
 export default Content;

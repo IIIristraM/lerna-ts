@@ -2,24 +2,16 @@ import WebpackDevMiddleware from 'webpack-dev-middleware';
 import open from 'open';
 import { MultiCompiler, ProjectConfiguration } from 'webpack';
 
-import { createWatchIgnore } from '../../../../webpack/src';
-import { PUBLIC_PATH, PORT } from '../../consts';
+import { PORT } from '../../consts';
 
 export default function webpackDevMiddleware(compiler: MultiCompiler, configs: ProjectConfiguration[]) {
     const webpackDevMiddlewareInstance = WebpackDevMiddleware(compiler, {
-        publicPath: PUBLIC_PATH,
-        lazy: false,
         stats: {
             all: false,
             assets: true,
             errors: true,
             warnings: true,
         },
-        watchOptions: {
-            aggregateTimeout: 500,
-            ignored: createWatchIgnore(),
-        },
-        logLevel: 'info',
         writeToDisk: true, // required for IDE handle TS errors
         serverSideRender: true,
     });
@@ -28,15 +20,15 @@ export default function webpackDevMiddleware(compiler: MultiCompiler, configs: P
         console.log('------------- REBUILD TRIGGERED BY -------------');
 
         for (let i = 0; i < compiler.compilers.length; i++) {
-            const { watchFileSystem } = compiler.compilers[i];
+            const { watching } = compiler.compilers[i];
             const { name } = configs[i];
 
-            const watcher = watchFileSystem?.watcher || watchFileSystem?.wfs?.watcher;
+            const watcher = watching?.watcher || watching?.pausedWatcher;
             if (!watcher) {
                 return;
             }
 
-            const changedFile = Object.keys(watcher.mtimes);
+            const changedFile = [...(watcher.getInfo?.().changes || [])];
             console.log(name, changedFile);
         }
 

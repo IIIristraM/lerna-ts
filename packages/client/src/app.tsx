@@ -9,6 +9,7 @@ import { Loader } from '@project/common/components/loader';
 
 import AboutPage from './pages/AboutPage';
 
+// TODO hmr doesn't work for async components
 const HomePageAsync = load(() => import('./pages/home-page'));
 const ContactsPageAsync = load({
     import: () => import(/* webpackChunkName: "ContactsPage" */ './pages/ContactsPage'),

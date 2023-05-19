@@ -4,11 +4,6 @@
         "module": "commonjs",
         "baseUrl": ".",
         "outDir": "./build",
-        "types": [
-            "node",
-            "webpack",
-            "utils"
-        ],
         "paths": {
             "@project/tools/*": [
                 "../tools/src/*"

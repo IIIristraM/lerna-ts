@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { hot } from 'react-hot-loader/root';
 
 import { square } from '@project/common/utils';
 import { CommonState } from '@project/common/infrastructure/reducers';
@@ -25,4 +26,4 @@ const HomePage: React.FC<{}> = () => {
     );
 };
 
-export default HomePage;
+export default hot(HomePage);

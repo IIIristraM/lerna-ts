@@ -8,13 +8,6 @@
         "declaration": true,
         "declarationMap": true,
         "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
-        "types": [
-            "utils",
-            "node",
-            "react",
-            "client",
-            "jest"
-        ],
         "lib": [
             "ES2015",
             "DOM"

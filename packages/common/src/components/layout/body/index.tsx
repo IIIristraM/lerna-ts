@@ -1,9 +1,9 @@
 import React from 'react';
 
-import { body } from './styles.css';
+import styles from './styles.css';
 
 const Body: React.FC<{}> = ({ children }) => {
-    return <div className={body}>{children}</div>;
+    return <div className={styles.body}>{children}</div>;
 };
 
 export default Body;

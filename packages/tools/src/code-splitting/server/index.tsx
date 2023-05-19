@@ -4,7 +4,7 @@ import serialize from 'serialize-javascript';
 
 import { ChunksContext } from '../common/contexts';
 
-export type PackageStats = Pick<Stats.ToJsonOutput, 'assetsByChunkName' | 'chunks' | 'publicPath'>;
+export type PackageStats = Pick<ReturnType<Stats['toJson']>, 'assetsByChunkName' | 'chunks' | 'publicPath'>;
 
 export type Assets = {
     initial: string[];
@@ -117,7 +117,7 @@ export function processStats(stats: PackageStats[]) {
         };
 
         for (const chunk of item.chunks) {
-            const { files, initial } = chunk;
+            const { files = [], initial } = chunk;
 
             for (const file of files) {
                 if (['hot-update'].some(exclude => file.includes(exclude))) {

@@ -23,13 +23,14 @@ addAliases(config, clientConfig.name);
 addAliases(config, commonConfig.name);
 
 // exclude webpack dependencies from production build
-config.externals.push(function (context, request, callback) {
-    if (/[.]\/middlewares\/dev/.test(request)) {
-        return callback(null, 'commonjs ' + request);
-    }
+Array.isArray(config.externals) &&
+    config.externals.push(function ({ context, request, contextInfo, getResolve }, callback) {
+        if (request && /[.]\/middlewares\/dev/.test(request)) {
+            return callback(undefined, 'commonjs ' + request);
+        }
 
-    (callback as Function)();
-});
+        callback();
+    });
 
 // allow __dirname and __filename keep common node behavior
 config.node = {

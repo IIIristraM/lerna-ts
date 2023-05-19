@@ -4,15 +4,6 @@
         "module": "commonjs",
         "outDir": "build",
         "baseUrl": ".",
-        "types": [
-            "node",
-            "webpack",
-            "react",
-            "react-router",
-            "react-router-dom",
-            "utils",
-            "css"
-        ],
         "paths": {
             "@project/tools/*": [
                 "../tools/src/*"

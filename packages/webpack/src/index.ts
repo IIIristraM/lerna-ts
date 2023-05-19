@@ -77,7 +77,7 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
             splitChunks: {
                 chunks: 'all',
                 cacheGroups: {
-                    vendors: false,
+                    defaultVendors: false,
                 },
             },
         },
@@ -98,11 +98,12 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
             minimize: false,
         };
 
-        config.externals.push(
-            nodeExternals({
-                modulesDir: '../../node_modules',
-            }),
-        );
+        Array.isArray(config.externals) &&
+            config.externals.push(
+                nodeExternals({
+                    modulesDir: '../../node_modules',
+                }),
+            );
     }
 
     if (dll) {
@@ -130,7 +131,10 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
         }
 
         config.plugins.push(
-            ...[new webpack.WatchIgnorePlugin(createWatchIgnore()), new webpack.HotModuleReplacementPlugin()],
+            ...[
+                new webpack.WatchIgnorePlugin({ paths: createWatchIgnore() }),
+                new webpack.HotModuleReplacementPlugin(),
+            ],
         );
     }
 
@@ -172,15 +176,13 @@ export const processStyles = (config: ProjectConfiguration) => {
         loaders.push({
             loader: MiniCssExtractPlugin.loader,
             options: {
-                hmr: config.mode === 'development',
-                reloadAll: true,
+                esModule: false,
             },
         });
 
         config.plugins.push(
             new MiniCssExtractPlugin({
                 filename: createFileName(config, 'css'),
-                esModule: true,
             }),
         );
     }
@@ -193,10 +195,10 @@ export const processStyles = (config: ProjectConfiguration) => {
                 loader: 'css-loader',
                 options: {
                     modules: {
-                        context: __dirname, // required for identical hashes
+                        localIdentContext: __dirname, // required for identical hashes
                         localIdentName: config.mode === 'development' ? '[local]__[hash:base64]' : '[hash:base64]',
+                        exportOnlyLocals: config.target === 'node',
                     },
-                    onlyLocals: config.target === 'node',
                 },
             },
         ],
@@ -218,7 +220,7 @@ export const addAliases = (config: ProjectConfiguration, pkg: string) => {
 export const addDll = (
     config: ProjectConfiguration,
     dllName: string,
-    options?: Partial<webpack.DllReferencePlugin.Options>,
+    options?: Partial<webpack.DllReferencePlugin['options']>,
 ) => {
     addAliases(config, dllName);
 

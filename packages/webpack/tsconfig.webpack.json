@@ -3,11 +3,6 @@
     "compilerOptions": {
         "module": "commonjs",
         "baseUrl": ".",
-        "types": [
-            "node",
-            "webpack",
-            "utils"
-        ],
         "paths": {
             "@project/tools/*": [
                 "../tools/src/*"

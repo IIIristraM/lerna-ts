@@ -16,16 +16,6 @@
             "ES2015",
             "DOM"
         ],
-        "types": [
-            "utils",
-            "react",
-            "react-router",
-            "react-router-dom",
-            "css",
-            "client",
-            "node",
-            "webpack"
-        ],
         "paths": {
             "@project/tools/*": [
                 "../tools/src/*"

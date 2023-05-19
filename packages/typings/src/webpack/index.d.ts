@@ -1,22 +1,10 @@
-import webpack, { Resolve } from 'webpack';
-import Watchpack from 'watchpack';
+import { Configuration } from 'webpack';
 
 declare global {
     function __webpack_require__<T>(id: string): T;
 }
 
 declare module 'webpack' {
-    interface NodeWatchFileSystem {
-        watcher?: Watchpack;
-        wfs?: {
-            watcher: Watchpack;
-        };
-    }
-
-    interface Compiler {
-        watchFileSystem?: NodeWatchFileSystem;
-    }
-
     export type ProjectConfiguration = Configuration & {
         name: string;
         context: string;
@@ -24,9 +12,9 @@ declare module 'webpack' {
             index: string[];
             [x: string]: string[];
         };
-        output: webpack.Output;
-        plugins: webpack.Plugin[];
-        resolve: Resolve;
-        externals: webpack.ExternalsElement[];
+        output: NonNullable<Configuration['output']>;
+        plugins: NonNullable<Configuration['plugins']>;
+        resolve: NonNullable<Configuration['resolve']>;
+        externals: NonNullable<Configuration['externals']>;
     };
 }

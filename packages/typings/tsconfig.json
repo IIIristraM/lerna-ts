@@ -6,9 +6,6 @@
         "outDir": "./build",
         "lib": [
             "DOM"
-        ],
-        "types": [
-            "react"
         ]
     },
     "include": [

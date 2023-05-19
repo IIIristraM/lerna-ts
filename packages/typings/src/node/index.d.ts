@@ -1,4 +1,4 @@
-/// <reference path="../../../../node_modules/@types/node/ts3.6/index.d.ts" />
+/// <reference path="../../../../node_modules/@types/node/index.d.ts" />
 
 type NodeEnv = 'development' | 'production' | undefined;
 

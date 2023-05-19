@@ -1,1 +1,2 @@
-TS_NODE_PROJECT="../webpack/tsconfig.webpack.json" node -r tsconfig-paths/register ../../node_modules/.bin/webpack
+#!/bin/bash
+TS_NODE_PROJECT="../webpack/tsconfig.webpack.json" ../../node_modules/.bin/webpack

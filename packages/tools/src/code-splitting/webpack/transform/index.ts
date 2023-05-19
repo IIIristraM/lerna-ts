@@ -24,7 +24,7 @@ export const transform: TransformerFactory<ts.SourceFile> = context => {
         ts.visitEachChild(arg, visitor, context);
 
         return importedModule
-            ? ts.createNodeArray([
+            ? ts.factory.createNodeArray([
                   createLoadOptions(
                       importedModule,
                       chunkName,
@@ -34,34 +34,40 @@ export const transform: TransformerFactory<ts.SourceFile> = context => {
             : [arg];
     };
 
-    const visitor = (loadFnName?: string) => (node: ts.Node): ts.Node => {
-        if (ts.isSourceFile(node)) {
-            sourceFile = node;
-            const importName = hasLoadUsage(node);
-            if (!importName) return node;
+    const visitor =
+        (loadFnName?: string) =>
+        (node: ts.Node): ts.Node => {
+            if (ts.isSourceFile(node)) {
+                sourceFile = node;
+                const importName = hasLoadUsage(node);
+                if (!importName) return node;
 
-            return ts.visitEachChild(node, visitor(importName), context);
-        }
+                return ts.visitEachChild(node, visitor(importName), context);
+            }
 
-        if (!loadFnName) {
-            throw new Error('loadFnName is not defined');
-        }
+            if (!loadFnName) {
+                throw new Error('loadFnName is not defined');
+            }
 
-        const args = isLoadFn(loadFnName, node);
-        if (!args) {
-            return ts.visitEachChild(node, visitor(loadFnName), context);
-        }
+            const args = isLoadFn(loadFnName, node);
+            if (!args) {
+                return ts.visitEachChild(node, visitor(loadFnName), context);
+            }
 
-        if (
-            !ts.isArrowFunction(args[0]) &&
-            !ts.isFunctionExpression(args[0]) &&
-            !ts.isObjectLiteralExpression(args[0])
-        ) {
-            return node;
-        }
+            if (
+                !ts.isArrowFunction(args[0]) &&
+                !ts.isFunctionExpression(args[0]) &&
+                !ts.isObjectLiteralExpression(args[0])
+            ) {
+                return node;
+            }
 
-        return ts.createCall(ts.createIdentifier(loadFnName), undefined, processArgs(args[0]));
-    };
+            return ts.factory.createCallExpression(
+                ts.factory.createIdentifier(loadFnName),
+                undefined,
+                processArgs(args[0]),
+            );
+        };
 
     return node => {
         return ts.visitNode(node, visitor());

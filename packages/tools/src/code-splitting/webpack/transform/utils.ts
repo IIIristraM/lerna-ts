@@ -39,62 +39,62 @@ export function isLoadFn(loadFnName: string, node: ts.Node) {
 }
 
 function createChunkName(chunkName: string) {
-    return ts.createPropertyAssignment(
-        ts.createIdentifier('chunkName'),
-        ts.createArrowFunction(
+    return ts.factory.createPropertyAssignment(
+        ts.factory.createIdentifier('chunkName'),
+        ts.factory.createArrowFunction(
             undefined,
             undefined,
             [],
             undefined,
-            ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
-            ts.createStringLiteral(chunkName),
+            ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+            ts.factory.createStringLiteral(chunkName),
         ),
     );
 }
 
 function createAsyncImport(modulePath: string, chunkName: string) {
-    const importNode = ts.createToken(ts.SyntaxKind.ImportKeyword) as ts.Expression;
+    const importNode = ts.factory.createToken(ts.SyntaxKind.ImportKeyword) as ts.Expression;
 
-    const importPathNode = ts.createStringLiteral(modulePath);
+    const importPathNode = ts.factory.createStringLiteral(modulePath);
     ts.addSyntheticLeadingComment(
         importPathNode,
         ts.SyntaxKind.MultiLineCommentTrivia,
         ` webpackChunkName: "${chunkName}" `,
     );
 
-    return ts.createPropertyAssignment(
-        ts.createIdentifier('asyncImport'),
-        ts.createArrowFunction(
+    return ts.factory.createPropertyAssignment(
+        ts.factory.createIdentifier('asyncImport'),
+        ts.factory.createArrowFunction(
             undefined,
             undefined,
             [],
             undefined,
-            ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
-            ts.createCall(importNode, undefined, [importPathNode]),
+            ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+            ts.factory.createCallExpression(importNode, undefined, [importPathNode]),
         ),
     );
 }
 
 function createSyncImport(modulePath: string) {
-    return ts.createPropertyAssignment(
-        ts.createIdentifier('syncImport'),
-        ts.createArrowFunction(
+    return ts.factory.createPropertyAssignment(
+        ts.factory.createIdentifier('syncImport'),
+        ts.factory.createArrowFunction(
             undefined,
             undefined,
             [],
             undefined,
-            ts.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
-            ts.createBlock(
+            ts.factory.createToken(ts.SyntaxKind.EqualsGreaterThanToken),
+            ts.factory.createBlock(
                 [
-                    ts.createReturn(
-                        ts.createCall(ts.createIdentifier('__webpack_require__'), undefined, [
-                            ts.createCall(
-                                ts.createPropertyAccess(
-                                    ts.createIdentifier('require'),
-                                    ts.createIdentifier('resolveWeak'),
+                    ts.factory.createReturnStatement(
+                        ts.factory.createCallExpression(ts.factory.createIdentifier('__webpack_require__'), undefined, [
+                            ts.factory.createCallExpression(
+                                ts.factory.createPropertyAccessExpression(
+                                    ts.factory.createIdentifier('require'),
+                                    ts.factory.createIdentifier('resolveWeak'),
                                 ),
                                 undefined,
-                                [ts.createStringLiteral(modulePath)],
+                                [ts.factory.createStringLiteral(modulePath)],
                             ),
                         ]),
                     ),
@@ -148,7 +148,7 @@ export function createLoadOptions(
             .filter(s => !s.match(/^[.]*$/))
             .join('_');
 
-    return ts.createObjectLiteral(
+    return ts.factory.createObjectLiteralExpression(
         [
             createChunkName(chunkName),
             createAsyncImport(modulePath, chunkName),

@@ -51,6 +51,11 @@ test('hasLoadUsage_4', () => {
 });
 
 test('isLoadFn', () => {
-    expect(isLoadFn('load', ts.createCall(ts.createIdentifier('load'), undefined, []))).toBeTruthy();
-    expect(isLoadFn('xxx', ts.createCall(ts.createIdentifier('load'), undefined, []))).toBe(null);
+    expect(
+        isLoadFn('load', ts.factory.createCallExpression(ts.factory.createIdentifier('load'), undefined, [])),
+    ).toBeTruthy();
+
+    expect(isLoadFn('xxx', ts.factory.createCallExpression(ts.factory.createIdentifier('load'), undefined, []))).toBe(
+        null,
+    );
 });

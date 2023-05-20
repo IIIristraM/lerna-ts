@@ -57,6 +57,6 @@ test('transform', () => {
         ts.ScriptTarget.Latest,
     );
 
-    const transformedFile = ts.transform(sourceFile, [transform]).transformed[0];
+    const transformedFile = ts.transform<ts.SourceFile>(sourceFile, [transform]).transformed[0];
     expect(printer.printFile(transformedFile)).toBe(printer.printFile(expectSourceFile));
 });

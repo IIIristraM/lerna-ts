@@ -19,7 +19,7 @@
     "author": "",
     "license": "ISC",
     "dependencies": {
-        "@iiiristram/sagun": "0.0.20",
+        "@iiiristram/sagun": "1.0.0",
         "compression": "^1.7.4",
         "express": "^4.17.1",
         "react": "^17.0.0",
@@ -36,8 +36,7 @@
     },
     "devDependencies": {
         "@hot-loader/react-dom": "^17.0.2",
-        "@iiiristram/ts-type-utils": "0.0.1",
-        "@iiiristram/sagun": "0.0.20",
+        "@iiiristram/ts-type-utils": "1.0.0",
         "@types/compression": "^1.0.1",
         "@types/enzyme": "^3.10.6",
         "@types/enzyme-adapter-react-16": "^1.0.6",

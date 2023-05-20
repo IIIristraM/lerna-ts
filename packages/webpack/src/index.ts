@@ -105,6 +105,12 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
                     modulesDir: '../../node_modules',
                 }),
             );
+
+        // allow __dirname and __filename keep common node behavior
+        config.node = {
+            __dirname: false,
+            __filename: false,
+        };
     }
 
     if (dll) {

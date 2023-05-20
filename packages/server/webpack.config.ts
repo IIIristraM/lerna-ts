@@ -32,10 +32,4 @@ Array.isArray(config.externals) &&
         callback();
     });
 
-// allow __dirname and __filename keep common node behavior
-config.node = {
-    __dirname: false,
-    __filename: false,
-};
-
 export default config;

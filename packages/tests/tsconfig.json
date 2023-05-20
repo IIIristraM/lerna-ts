@@ -1,0 +1,31 @@
+{
+    "extends": "../tsconfig/tsconfig.json",
+    "compilerOptions": {
+        "module": "commonjs",
+        "outDir": "build",
+        "baseUrl": ".",
+        "strictNullChecks": true,
+        "skipLibCheck": true,
+        "lib": [
+            "ES2015",
+            "DOM"
+        ],
+        "paths": {
+            "@project/tools/*": [
+                "../tools/src/*"
+            ],
+            "@project/common/*": [
+                "../common/src/*"
+            ],
+            "@project/client/*": [
+                "../client/src/*"
+            ],
+            "@project/server/*": [
+                "../server/src/*"
+            ]
+        }
+    },
+    "include": [
+        "e2e"
+    ]
+}

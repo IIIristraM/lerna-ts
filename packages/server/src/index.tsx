@@ -9,6 +9,10 @@ const app = express();
 
 let promise = Promise.resolve();
 
+app.get('/favicon.ico', (req, res) => {
+    res.sendStatus(404);
+});
+
 if (process.env.NODE_ENV === 'development') {
     const { configDev } = require('./middlewares/dev');
     configDev(app);

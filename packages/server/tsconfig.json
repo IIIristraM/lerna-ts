@@ -14,7 +14,8 @@
             "@project/client/*": [
                 "../client/src/*"
             ]
-        }
+        },
+        "sourceMap": true
     },
     "include": [
         "src/**/*"

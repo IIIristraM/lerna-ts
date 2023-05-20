@@ -1,0 +1,11 @@
+{
+    "name": "@project/tests",
+    "version": "0.0.0",
+    "description": "",
+    "author": "iiiristram",
+    "license": "ISC",
+    "private": true,
+    "scripts": {
+        "test": "jest --runInBand --detectOpenHandles --passWithNoTests"
+    }
+}

@@ -1,5 +1,17 @@
 .link {
     margin-right: 15px;
-    color: black;
     text-transform: uppercase;
+    font-weight: 600;
+    position: relative;
+}
+
+.link:hover::after,
+.link.active::after {
+    content: '';
+    display: block;
+    height: 2px;
+    width: 100%;
+    background-color: white;
+    position: absolute;
+    bottom: -4px;
 }

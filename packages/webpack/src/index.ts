@@ -35,7 +35,8 @@ const createFileName = (config: ProjectConfiguration, ext: string) => {
 
     const parts = ['[name]'];
     if (!!library) parts.push('dll');
-    if (target === 'web' && mode === 'production') parts.push('[hash]');
+    // Node has to be always hashed for ssr hmr
+    if (target === 'node' || mode === 'production') parts.push('[hash]');
 
     return [...parts, ext].join('.');
 };

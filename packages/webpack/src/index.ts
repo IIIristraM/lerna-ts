@@ -26,7 +26,7 @@ type InitOptions = {
     target?: Target;
 };
 
-const createFileName = (config: ProjectConfiguration, ext: string) => {
+const createFileName = (config: ProjectConfiguration, ext: string, isChunk: boolean = false) => {
     const {
         target,
         output: { library },
@@ -146,7 +146,7 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
     }
 
     config.output.filename = createFileName(config, 'js');
-    config.output.chunkFilename = createFileName(config, 'js');
+    config.output.chunkFilename = createFileName(config, 'js', true);
 
     return config;
 };
@@ -156,7 +156,7 @@ export const processTypescript = (config: ProjectConfiguration) => {
     config.module.rules = config.module.rules || [];
 
     config.module.rules.push({
-        test: /[.]tsx?/,
+        test: /[.]tsx?$/,
         loader: 'ts-loader',
         exclude: '/node_modules/',
         options: {

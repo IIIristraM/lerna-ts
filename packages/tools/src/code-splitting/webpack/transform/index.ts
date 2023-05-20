@@ -1,7 +1,7 @@
-import ts, { TransformerFactory } from 'typescript';
+import ts, { TransformationContext } from 'typescript';
 import { hasLoadUsage, isLoadFn, createLoadOptions, isFnImport, isObjectImport, isImportProp } from './utils';
 
-export const transform: TransformerFactory<ts.Node> = context => {
+export function transform(context: TransformationContext) {
     let sourceFile: ts.SourceFile;
 
     const processArgs = (arg: ts.Expression) => {
@@ -69,7 +69,7 @@ export const transform: TransformerFactory<ts.Node> = context => {
             );
         };
 
-    return node => {
-        return ts.visitNode(node, visitor());
+    return <T extends ts.Node = ts.SourceFile>(node: T) => {
+        return ts.visitNode(node, visitor()) as T;
     };
-};
+}

@@ -1,9 +1,9 @@
 import { combineReducers } from 'redux';
 
-import userReducer from './user';
+import { asyncOperationsReducer } from '@iiiristram/sagun';
 
 const rootReducer = combineReducers({
-    user: userReducer,
+    asyncOperations: asyncOperationsReducer,
 });
 
 export type CommonState = ReturnType<typeof rootReducer>;

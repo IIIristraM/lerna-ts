@@ -1,0 +1,8 @@
+.rightSidebar {
+    width: 350px;
+    height: calc(100vh - 70px);
+    flex-shrink: 0;
+    background-color: #ffffff;
+    position: relative;
+    padding: 1rem;
+}

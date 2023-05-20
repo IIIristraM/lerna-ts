@@ -1,5 +1,10 @@
 {
     "extends": "../tsconfig/tsconfig.json",
+    "references": [
+        {
+            "path": "../tools/tsconfig.json",
+        }
+    ],
     "compilerOptions": {
         "baseUrl": ".",
         "rootDir": "src",
@@ -8,8 +13,24 @@
         "declaration": true,
         "declarationMap": true,
         "tsBuildInfoFile": "./node_modules/.cache/tsconfig.tsbuildinfo",
-        "types": ["utils", "css", "node", "client"],
-        "lib": ["ES2015", "DOM"]
+        "types": [
+            "utils",
+            "css",
+            "node",
+            "client",
+            "redux-saga"
+        ],
+        "lib": [
+            "ES2015",
+            "DOM"
+        ],
+        "paths": {
+            "@project/tools/*": [
+                "../tools/src/*"
+            ]
+        }
     },
-    "include": ["src/**/*"]
+    "include": [
+        "src/**/*"
+    ]
 }

@@ -18,11 +18,15 @@ export type Resources = {
 };
 
 export class ChunksManager {
-    private chunksToLoad: Set<string> = new Set();
+    private _chunksToLoad: Set<string> = new Set();
 
     private registerChunk = (chunkName: string) => {
-        this.chunksToLoad.add(chunkName);
+        this._chunksToLoad.add(chunkName);
     };
+
+    public get chunksToLoad() {
+        return Array.from(this._chunksToLoad);
+    }
 
     public wrap = (children: React.ReactNode) => (
         <ChunksContext.Provider
@@ -55,7 +59,7 @@ export class ChunksManager {
 
     public getScripts() {
         return ({ resources }: { resources: Resources[] }) => {
-            const chunksToLoad = Array.from(this.chunksToLoad);
+            const chunksToLoad = this.chunksToLoad;
 
             return (
                 <>
@@ -80,7 +84,7 @@ export class ChunksManager {
 
     public getStyles() {
         return ({ resources }: { resources: Resources[] }) => {
-            const chunksToLoad = Array.from(this.chunksToLoad);
+            const chunksToLoad = this.chunksToLoad;
 
             return (
                 <>

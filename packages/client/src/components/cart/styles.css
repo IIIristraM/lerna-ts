@@ -1,0 +1,17 @@
+.cart {
+    height: 100%;
+    padding: 1rem;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    position: relative;
+    min-width: 100px;
+}
+
+.title {
+    margin-right: 5px;
+}
+
+.price {
+    font-weight: 200;
+}

@@ -11,11 +11,11 @@ const config = init({
     name: NAME,
     dll: true,
     context: path.resolve(__dirname),
-    entry: ['react', 'react-dom', 'react-router', 'react-router-dom', 'redux', 'react-redux'],
+    entry: ['react', 'react-dom', 'react-router', 'react-router-dom', 'redux', 'react-redux', '@iiiristram/sagun'],
 });
 
 if (config.mode === 'production') {
-    config.plugins.push(
+    config.plugins?.push(
         new HardSourceWebpackPlugin({
             cacheDirectory: path.resolve(`../../node_modules/.cache/hard-source-webpack-plugin/${NAME}`),
         }),

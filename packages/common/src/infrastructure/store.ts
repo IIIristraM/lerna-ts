@@ -1,12 +1,19 @@
-import { createStore as createStoreBase, Store } from 'redux';
+import { applyMiddleware, createStore as createStoreBase, Store } from 'redux';
+import createSagaMiddleware from 'redux-saga';
 
-import rootReducer, { CommonState } from './reducers';
+import rootReducer from './reducers';
+import type { CommonState } from './reducers';
 
 let __store: Store<CommonState>;
 
 export function createStore(preloadedState: CommonState) {
-    __store = createStoreBase(rootReducer, preloadedState);
-    return getStore();
+    const sagaMiddleware = createSagaMiddleware();
+
+    __store = applyMiddleware(sagaMiddleware)(createStoreBase)(rootReducer, preloadedState);
+    return {
+        store: getStore(),
+        sagaMiddleware,
+    };
 }
 
 export default function getStore() {
@@ -16,3 +23,5 @@ export default function getStore() {
 
     return __store;
 }
+
+export type { CommonState } from './reducers';

@@ -1,7 +1,7 @@
 import ts, { TransformerFactory } from 'typescript';
 import { hasLoadUsage, isLoadFn, createLoadOptions, isFnImport, isObjectImport, isImportProp } from './utils';
 
-export const transform: TransformerFactory<ts.SourceFile> = context => {
+export const transform: TransformerFactory<ts.Node> = context => {
     let sourceFile: ts.SourceFile;
 
     const processArgs = (arg: ts.Expression) => {

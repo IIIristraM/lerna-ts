@@ -14,6 +14,7 @@ import { CartService } from '../../sagas/services/CartService';
 import { Cart } from '../cart';
 import { Navigation } from '../navigation';
 import { ProductsService } from '../../sagas/services/ProductService';
+import { WatchService } from '../../sagas/services/WatchService';
 
 const HomePageAsync = load({
     import: () => import(/* webpackChunkName: "HomePage" */ '../home-page'),
@@ -41,10 +42,12 @@ const appSagaFactory = ({ getService }: IDIContext) => ({
         const cartService = getService(CartService);
         const layoutService = getService(LayoutService);
         const productsService = getService(ProductsService);
+        const watchService = getService(WatchService);
 
         yield* call(productsService.run);
         yield* call(cartService.run);
         yield* call(layoutService.run);
+        yield* call(watchService.run);
 
         yield* all([
             call(productsService.loadProducts),
@@ -59,6 +62,7 @@ const App = () => {
     di.registerService(di.createService(CartService));
     di.registerService(di.createService(LayoutService));
     di.registerService(di.createService(ProductsService));
+    di.registerService(di.createService(WatchService));
 
     useSaga(appSagaFactory(di));
 

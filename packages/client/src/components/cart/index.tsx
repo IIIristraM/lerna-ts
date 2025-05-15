@@ -1,9 +1,8 @@
 import React, { 
-    memo,
-    Suspense
+    memo
 } from 'react';
 import { useSelector } from 'react-redux';
-import { DisableSsrContext, useOperation, useSaga, useServiceConsumer } from '@iiiristram/sagun';
+import { useOperation, useServiceConsumer } from '@iiiristram/sagun';
 
 import { formatPrice } from '@project/common/utils';
 import { LayoutService } from '@project/common/sagas/services/LayoutService';
@@ -36,9 +35,7 @@ export const Cart = () => {
 
     return (
         <div className={[styles.cart, mixins.primary].join(' ')} onClick={() => service.actions.toggleRightSidebar()}>
-            {/* <Suspense fallback={<Loader size="small" />}> */}
-                <Total />
-            {/* </Suspense> */}
+            <Total />
         </div>
     );
 };

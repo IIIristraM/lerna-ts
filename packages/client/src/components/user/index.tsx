@@ -39,7 +39,7 @@ const UserName = memo(function UserName() {
 export function User() {
     return (
         <div className={[styles.user, mixins.primary].join(' ')}>
-            <DisableSsrContext.Provider value={true}>
+            <DisableSsrContext.Provider value={false}>
                 <Suspense fallback={<Loader size="small" />}>
                     <UserName />
                 </Suspense>

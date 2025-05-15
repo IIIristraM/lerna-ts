@@ -95,7 +95,7 @@ const App = () => {
 };
 
 export default () => (
-    <DisableSsrContext.Provider value={true}>
+    <DisableSsrContext.Provider value={false}>
         <Suspense fallback={<PrimaryLoader />}>
             <App />
         </Suspense>

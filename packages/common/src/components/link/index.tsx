@@ -5,12 +5,14 @@ import { useSaga } from '@iiiristram/sagun';
 
 import styles from './styles.css';
 
-function* onLoad() {
+function* onLoad(id: string) {
+    console.log(id)
     yield* [1];
 }
 
 const Link: React.FC<LinkProps> = ({ children, ...rest }) => {
-    useSaga({ onLoad });
+    const id = rest.to + '';
+    useSaga({ id, onLoad }, [id]);
 
     return (
         <RouterLink {...rest} activeClassName={styles.active} className={styles.link} exact>

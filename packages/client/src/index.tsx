@@ -33,22 +33,8 @@ sagaMiddleware.run(function* () {
 
 useOperation.setPath((state: CommonState) => state.asyncOperations);
 
-// ReactDOM.hydrateRoot(
-//     appEl!,
-//     <Root operationService={operationService} componentLifecycleService={service}>
-//         <Provider store={store}>
-//             <BrowserRouter>
-//                 <App />
-//             </BrowserRouter>
-//         </Provider>
-//     </Root>,
-// );
-
-const root = ReactDOM.createRoot(
-    appEl!
-)
-
-root.render(    
+ReactDOM.hydrateRoot(
+    appEl!,
     <Root operationService={operationService} componentLifecycleService={service}>
         <Provider store={store}>
             <BrowserRouter>
@@ -57,6 +43,20 @@ root.render(
         </Provider>
     </Root>,
 );
+
+// const root = ReactDOM.createRoot(
+//     appEl!
+// )
+
+// root.render(    
+//     <Root operationService={operationService} componentLifecycleService={service}>
+//         <Provider store={store}>
+//             <BrowserRouter>
+//                 <App />
+//             </BrowserRouter>
+//         </Provider>
+//     </Root>,
+// );
 
 delete window.__SSR_CONTEXT__;
 document.getElementById('hash')?.remove();

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import { Switch, Route } from 'react-router';
 import { hot } from 'react-hot-loader/root';
 import { call, all } from 'typed-redux-saga';
@@ -15,6 +15,8 @@ import { Cart } from '../cart';
 import { Navigation } from '../navigation';
 import { ProductsService } from '../../sagas/services/ProductService';
 import { WatchService } from '../../sagas/services/WatchService';
+import { UserService } from '../../sagas/services/UserService';
+import { User } from '../user';
 
 const HomePageAsync = load({
     import: () => import(/* webpackChunkName: "HomePage" */ '../home-page'),
@@ -38,6 +40,7 @@ const ROUTES = [
 ];
 
 const appSagaFactory = ({ getService }: IDIContext) => ({
+    id: "app-init",
     onLoad: function* () {
         const cartService = getService(CartService);
         const layoutService = getService(LayoutService);
@@ -51,7 +54,7 @@ const appSagaFactory = ({ getService }: IDIContext) => ({
 
         yield* all([
             call(productsService.loadProducts),
-            call(cartService.loadCart),
+            call(cartService.loadCart)
         ])
     }
 })
@@ -63,14 +66,18 @@ const App = () => {
     di.registerService(di.createService(LayoutService));
     di.registerService(di.createService(ProductsService));
     di.registerService(di.createService(WatchService));
+    di.registerService(di.createService(UserService));
 
     useSaga(appSagaFactory(di));
+
+    console.log("Render App")
 
     return (
         <Body>
             <Header>
+                <User />
                 <Navigation>
-                    {ROUTES.map(({ url, text }) => (
+                    {ROUTES.map(({ url, text }, i) => (
                         <Link key={url} to={url}>
                             {text}
                         </Link>
@@ -87,8 +94,10 @@ const App = () => {
     );
 };
 
-export default hot(() => (
-    <DisableSsrContext.Provider value={false}>
-        <App />
+export default () => (
+    <DisableSsrContext.Provider value={true}>
+        <Suspense fallback={<PrimaryLoader />}>
+            <App />
+        </Suspense>
     </DisableSsrContext.Provider>
-));
+);

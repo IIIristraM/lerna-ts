@@ -1,22 +1,19 @@
 import { CommonState } from '@project/common/infrastructure/store';
 import { getOperation } from '@project/common/selectors';
-import { Product } from './api/products';
 
+import { Product } from './api/products';
 import { CART_OPERATION_ID, PRODUCTS_OPERATION_ID } from './consts';
-import { ProductID } from './types';
+import { Cart } from './types';
 
 export const cartOperationSelector = getOperation(CART_OPERATION_ID);
 export const productsOperationSelector = getOperation(PRODUCTS_OPERATION_ID);
 
-const productById = (id: ProductID) => (state: CommonState) =>
-    productsOperationSelector(state)?.result?.find(p => p.id === id)
-
-export const cartSelector = (state: CommonState) =>
+export const cartSelector = (cart?: Cart, products?: Product[]) =>
     Object
-        .entries(cartOperationSelector(state)?.result || {})
+        .entries(cart || {})
         .reduce((prev, current) => {
             const [id, count] = current;
-            const product = productById(id)(state);
+            const product = products?.find(p => p.id === id);
 
             if (product && count) {
                 prev.push({ product, count });
@@ -27,7 +24,7 @@ export const cartSelector = (state: CommonState) =>
 
 
 export const cartPriceSelector = (state: CommonState) =>
-    cartSelector(state)
+    cartSelector(cartOperationSelector(state)?.result, productsOperationSelector(state)?.result)
         .reduce((prev, current) => {
             const { count, product: { price } } = current;
             return prev += (price || 0) * count;

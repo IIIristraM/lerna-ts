@@ -14,7 +14,7 @@
         "strictNullChecks": true,
         "strictFunctionTypes": false,
         "noImplicitAny": true,
-        "noUnusedLocals": true,
+        "noUnusedLocals": false,
         "pretty": true,
         "skipDefaultLibCheck": true,
         "disableSourceOfProjectReferenceRedirect": false,

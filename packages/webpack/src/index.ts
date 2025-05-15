@@ -60,7 +60,7 @@ export const init = ({ name = '', dll = false, context = '', target = 'web', ent
             alias:
                 MODE === 'development'
                     ? {
-                          'react-dom': '@hot-loader/react-dom',
+                        //   'react-dom/client': '@hot-loader/react-dom',
                       }
                     : {},
             extensions: ['.ts', '.tsx', '.js', '.json'],

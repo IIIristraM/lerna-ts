@@ -13,9 +13,9 @@ const config = init({
     context: path.resolve(__dirname),
 });
 
-if (config.mode === 'development') {
-    config.entry['index'].unshift('react-hot-loader/patch');
-}
+// if (config.mode === 'development') {
+//     config.entry['index'].unshift('react-hot-loader/patch');
+// }
 
 processTypescript(config);
 processStyles(config);

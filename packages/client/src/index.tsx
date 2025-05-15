@@ -1,11 +1,11 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import ReactDOM from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
 import { call } from 'typed-redux-saga';
+import { useOperation, ComponentLifecycleService, OperationService, Root } from '@iiiristram/sagun';
 
 import { CommonState } from '@project/common/infrastructure/store';
-import { useOperation, ComponentLifecycleService, OperationService, Root } from '@iiiristram/sagun';
 
 import App from './components/app';
 import { sagaMiddleware, store } from './store';
@@ -33,7 +33,22 @@ sagaMiddleware.run(function* () {
 
 useOperation.setPath((state: CommonState) => state.asyncOperations);
 
-ReactDOM.hydrate(
+// ReactDOM.hydrateRoot(
+//     appEl!,
+//     <Root operationService={operationService} componentLifecycleService={service}>
+//         <Provider store={store}>
+//             <BrowserRouter>
+//                 <App />
+//             </BrowserRouter>
+//         </Provider>
+//     </Root>,
+// );
+
+const root = ReactDOM.createRoot(
+    appEl!
+)
+
+root.render(    
     <Root operationService={operationService} componentLifecycleService={service}>
         <Provider store={store}>
             <BrowserRouter>
@@ -41,7 +56,6 @@ ReactDOM.hydrate(
             </BrowserRouter>
         </Provider>
     </Root>,
-    appEl!,
 );
 
 delete window.__SSR_CONTEXT__;

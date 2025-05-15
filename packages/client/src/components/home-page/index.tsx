@@ -1,7 +1,11 @@
-import React, { memo, Suspense, useCallback } from 'react';
+import React, { 
+    memo, 
+    Suspense, 
+    useCallback 
+} from 'react';
 import { useSelector } from 'react-redux';
-
 import { useOperation, useServiceConsumer } from '@iiiristram/sagun';
+
 import { CommonState } from '@project/common/infrastructure/store';
 import { formatPrice } from '@project/common/utils';
 import { Content, ContentSwitcher, RightSidebar } from '@project/common/components/layout';
@@ -15,6 +19,7 @@ import {
     CardTitle,
 } from '@project/common/components/card';
 import { PrimaryLoader } from '@project/common/components/loader';
+import mixins from '@project/common/styles/mixins.css';
 
 import { Product, ProductID } from '../../api/products';
 import { CartService } from '../../sagas/services/CartService';
@@ -22,7 +27,6 @@ import { cartOperationSelector } from '../../selectors';
 import { CartDetails } from '../cart-details';
 import { CART_OPERATION_ID, PRODUCTS_OPERATION_ID } from '../../consts';
 
-import mixins from '@project/common/styles/mixins.css';
 import styles from './styles.css';
 
 const Button: React.FC<React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>> = ({
@@ -70,7 +74,7 @@ const ProductCard = memo<{ product: Product }>(({ product: { id, name, descripti
 });
 
 const ProductsList = memo(() => {
-    const operation = useOperation({ operationId: PRODUCTS_OPERATION_ID });
+    const operation = useOperation({ operationId: PRODUCTS_OPERATION_ID, suspense: true });
 
     return (
         <>
@@ -82,9 +86,6 @@ const ProductsList = memo(() => {
 });
 
 const PageContent = memo(() => {
-    useOperation({ operationId: PRODUCTS_OPERATION_ID, suspense: true });
-    useOperation({ operationId: CART_OPERATION_ID, suspense: true });
-
     return (
         <ContentSwitcher>
             <Content>
@@ -101,8 +102,8 @@ const PageContent = memo(() => {
 
 export default function HomePage() {
     return (
-        <Suspense fallback={<PrimaryLoader />}>
+        // <Suspense fallback={<PrimaryLoader />}>
             <PageContent />
-        </Suspense>
+        // </Suspense>
     );
 }

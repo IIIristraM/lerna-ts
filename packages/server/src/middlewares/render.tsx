@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
+import ReactDOMServer, { renderToPipeableStream } from 'react-dom/server';
 import { RequestHandler, Request } from 'express';
 import { StaticRouter } from 'react-router';
 import { Readable } from 'stream';
@@ -8,12 +8,12 @@ import serialize from 'serialize-javascript';
 import { Store } from 'redux';
 import { call } from 'typed-redux-saga';
 import { Map } from 'immutable';
+import { PassThrough } from "stream";
 
 import App from '@project/client/components/app';
 import { CommonState, createStore } from '@project/common/infrastructure/store';
 import { ChunksManager } from '@project/tools/code-splitting/server';
-import { useOperation, ComponentLifecycleService, OperationService, Root, SagaClientHash, AsyncOperation } from '@iiiristram/sagun';
-import { renderToStringAsync } from '@iiiristram/sagun/server';
+import { useOperation, ComponentLifecycleService, OperationService, Root, SagaClientHash, AsyncOperation, createDeferred } from '@iiiristram/sagun';
 
 type TemplateProps = {
     req: Request;
@@ -101,18 +101,35 @@ export default function render() {
             yield* call(service.run);
         });
 
-        // chunks have to be extracted after sagas executed
-        // due to cases when new dynamic component rendered after store fulfilled
-        const html = await renderToStringAsync(
+        let html = '';
+        const defer = createDeferred();
+        const stream = renderToPipeableStream(
             chunksManager.wrap(
                 <SsrApp store={store} url={req.url} service={service} operationService={operationService} />,
-            ),
-        );
+            ), {
+            onAllReady() {
+                const s = new PassThrough();
+                stream.pipe(s);
+
+                s.on('data', chunk => {
+                    html += chunk;
+                });
+
+                s.on('end', () => {
+                    defer.resolve();
+                });
+            },
+            onError(err) {
+                console.error(err);
+            },
+        });
+
+        await defer.promise;
 
         task.cancel();
         await task.toPromise();
 
-        const appStream = ReactDOMServer.renderToNodeStream(
+        const appStream = ReactDOMServer.renderToPipeableStream(
             <Template store={store} hash={operationService.getHash()} req={req} chunksManager={chunksManager}>
                 {html}
             </Template>,
